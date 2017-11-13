@@ -1,0 +1,191 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../iron-input/iron-input.html">
+<!--<link rel="import" href="../vaadin-valo-theme/vaadin-combo-box.html">-->
+<link rel="import" href="../vaadin-combo-box/vaadin-combo-box-light.html">
+
+
+<!--
+Automatic representation of a scalar value as Polymer Elements (Iron and Paper) – in either read-only or editable mode.
+
+‹data-scalars› elements consume an immutable data egg data structure and produce suitable Polymer elements to represent that value. The data egg is a simple structure, which contains the scalar value, its type and logical formatting hints.
+
+Designed to work hand-in-hand with data nuggets data structures delivered by ‹data-pipes›, although both can be used independently.
+
+Example of usage:
+
+  <data-point selector="coord" data="{{dataNugget}}" item="{{dataEgg}}">
+    <data-scalars data="{{dataEgg}}" editable="true|false"></data-scalars>
+  </data-point>
+-->
+
+
+
+<dom-module id="data-scalars">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply --layout-flex;
+      }
+
+      div.content {
+        width: 100%;
+        height: 23px;
+        position: relative;
+        box-sizing: border-box;
+        border: 1px solid transparent; /* Make sure every cell have same height */
+      }
+
+      div.content.error {
+        border: 1px solid rgb(255, 41, 41);
+        background-color: rgb(248, 183, 183);
+      }
+
+      div[hidden]{
+        display: none;
+      }
+
+      select,
+      input,
+      iron-input,
+      vaadin-combo-box-light {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      select[disabled],
+      input[disabled]{
+        border: none;
+        background: transparent;
+      }
+    </style>
+    <div class$="content [[_getErrorClass(data)]]" title="[[_getError(data)]]">
+      <template is="dom-if" if="[[_isElementType(data, 'text')]]">
+        <input type="text" value="[[_getValue(data)]]" title="[[_getValue(data)]]" disabled="[[disabled]]">
+      </template>
+      <template is="dom-if" if="[[_isElementType(data, 'dropdown')]]">
+        <!--<input type="text" on-input="_updateValue" value="[[_getValue(data)]]" title="[[_getValue(data)]]" disabled="[[disabled]]">-->
+
+          <!--<template is="dom-if" if="[[!disabled]]">
+            <paper-input id="suggestions-input" label="Select a [[name]]" value="[[_getValue(data)]]"></paper-input>
+            <paper-autocomplete-suggestions for="suggestions-input" label="[[_getValue(data)]]" source="[[suggestions]]" ></paper-autocomplete-suggestions>
+          </template>-->
+          <template is="dom-if" if="[[!disabled]]">
+            <vaadin-combo-box-light id="combo" items="[[suggestions]]" value="[[_getValue(data)]]" attr-for-value="bind-value" allow-custom-value>
+              <iron-input>
+                <input>
+              </iron-input>
+            </vaadin-combo-box-light>
+          </template>
+          <template is="dom-if" if="[[disabled]]">
+            <div hidden=[[!disabled]]>[[_getValue(data)]]</div>
+          </template>
+
+      </template>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * `data-scalars`
+     * Automatic representation of a scalar value
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class DataScalars extends Polymer.Element {
+      static get is() { return 'data-scalars'; }
+      static get properties() {
+        return {
+          /**
+           * The given `dataEgg`. A `dataEgg` is one element of the `dataNugget`.
+           * Example:
+           *
+           *    dataEgg = {value: …, schema: …, format: … [, metadata: …]}
+           */
+          data: {
+            type: Object,
+            notify: true
+          },
+
+          name: {
+            type: String,
+          },
+
+          /** Is this scalar editable or not ? (WIP) */
+          editable: {
+            type: Boolean,
+            notify: true,
+            value: false,
+            reflectToAttribute: true
+          },
+
+          /** Is this scalar input disabled ? */
+          disabled: {
+            type: Boolean,
+            notify: true,
+            value: false,
+            reflectToAttribute: true
+          },
+
+          /**
+           *
+           */
+          _elementType: {
+            type: String,
+            value: "input"
+          },
+
+          suggestions: {
+            type: Array,
+            computed:" _computeSuggestions( data)"
+          }
+        };
+      }
+
+      ready() {
+        super.ready();
+      }
+
+      _computeSuggestions( data){
+        return [
+                {label: "Test of dropdown", value: "test"},
+                {label: "ABC", value: "abc"}
+              ]
+      }
+
+      _getValue(data){
+        if(!data){return;}
+        return data.get("value")
+      }
+
+      _getError(data){
+        if(!data || !data.get("error")){return;}
+        return "Error: "+data.get("error");
+      }
+
+      _getErrorClass(data){
+        if(!data || !data.get("error")){return;}
+        if(data.get("error")){
+          return "error"
+        }
+      }
+
+      _updateValue(e){
+
+      }
+
+      _isElementType(data, elType){
+        if(data && data.get("schema") && data.get("schema").get("type")){
+          return data.get("schema").get("type") == elType;
+        } else {
+          return elType == 'text';
+        }
+      }
+    }
+
+    window.customElements.define(DataScalars.is, DataScalars);
+  </script>
+</dom-module>
