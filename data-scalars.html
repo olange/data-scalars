@@ -60,26 +60,32 @@ Example of usage:
         background: transparent;
       }
     </style>
-    <div class$="content [[_getErrorClass(data)]]" title="[[_getError(data)]]">
+    <div id="scalar" class$="content [[_getErrorClass(data)]]" title="[[_getError(data)]]">
       <template is="dom-if" if="[[_isElementType(data, 'text')]]">
-        <input type="text" value="[[_getValue(data)]]" title="[[_getValue(data)]]" disabled="[[disabled]]">
+        <input
+          id="input"
+          type="text"
+          value$="[[_value]]"
+          title="[[_value]]"
+          disabled="[[disabled]]"
+          on-change="_onChange">
       </template>
       <template is="dom-if" if="[[_isElementType(data, 'dropdown')]]">
-        <!--<input type="text" on-input="_updateValue" value="[[_getValue(data)]]" title="[[_getValue(data)]]" disabled="[[disabled]]">-->
-
-          <!--<template is="dom-if" if="[[!disabled]]">
-            <paper-input id="suggestions-input" label="Select a [[name]]" value="[[_getValue(data)]]"></paper-input>
-            <paper-autocomplete-suggestions for="suggestions-input" label="[[_getValue(data)]]" source="[[suggestions]]" ></paper-autocomplete-suggestions>
-          </template>-->
           <template is="dom-if" if="[[!disabled]]">
-            <vaadin-combo-box-light id="combo" items="[[suggestions]]" value="[[_getValue(data)]]" attr-for-value="bind-value" allow-custom-value>
+            <vaadin-combo-box-light
+              id="input"
+              items="[[_suggestions]]"
+              value="[[_value]]"
+              attr-for-value="bind-value"
+              on-value-changed="_onChange"
+              allow-custom-value>
               <iron-input>
-                <input>
+                <input value="[[_value]]">
               </iron-input>
             </vaadin-combo-box-light>
           </template>
           <template is="dom-if" if="[[disabled]]">
-            <div hidden=[[!disabled]]>[[_getValue(data)]]</div>
+            <input id="input" disabled="[[disabled]]" hidden="[[!disabled]]" value="[[_value]]">
           </template>
 
       </template>
@@ -107,7 +113,8 @@ Example of usage:
            */
           data: {
             type: Object,
-            notify: true
+            notify: true,
+            observer: "_dataChanged"
           },
 
           name: {
@@ -138,9 +145,21 @@ Example of usage:
             value: "input"
           },
 
-          suggestions: {
+          _suggestions: {
             type: Array,
-            computed:" _computeSuggestions( data)"
+            computed: "_computeSuggestions( data)"
+          },
+
+          _value: {
+            type: String,
+            computed: "_computeValue( data)"
+          },
+
+          _implementedTypes: {
+            type: Array,
+            value: () => {
+              return ["text", "dropdown"];
+            }
           }
         };
       }
@@ -149,18 +168,33 @@ Example of usage:
         super.ready();
       }
 
+      _dataChanged(data){
+        // FORCE SYNC !
+        var scalar = this.$.scalar;
+        if(scalar) {
+          var input = scalar.querySelector("#input");
+          if(input){
+            input.value = data.get("value");
+          }
+        };
+      }
+
       _computeSuggestions( data){
         return [
-                {label: "Test of dropdown", value: "test"},
-                {label: "ABC", value: "abc"}
-              ]
+          {label: "predefined1", value: "predefined1"},
+          {label: "predefined2", value: "predefined2"},
+          {label: "predefined3", value: "predefined3"},
+          {label: "predefined4", value: "predefined4"},
+          {label: "predefined5", value: "predefined5"},
+        ]
       }
 
-      _getValue(data){
-        if(!data){return;}
-        return data.get("value")
+      _computeValue( data){
+        if(!data){return}
+        return data.get("value");
       }
 
+      /** TODO: this should be computed */
       _getError(data){
         if(!data || !data.get("error")){return;}
         return "Error: "+data.get("error");
@@ -173,10 +207,17 @@ Example of usage:
         }
       }
 
-      _updateValue(e){
-
+      _onChange(e){
+        var value = e.currentTarget.value;
+        var event = new CustomEvent('change', {'detail': {name: this.name, value: value}})
+        this.dispatchEvent(event);
       }
 
+      /**
+        * Returns true if the data is of type `elType`.
+        * By default and if the type is not specified, it will return true as if `elType` == 'text'
+        * TODO: use _implementedTypes and throw a warning
+        */
       _isElementType(data, elType){
         if(data && data.get("schema") && data.get("schema").get("type")){
           return data.get("schema").get("type") == elType;
