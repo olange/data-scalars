@@ -63,30 +63,28 @@ Example of usage:
     <div id="scalar" class$="content [[_getErrorClass(data)]]" title="[[_getError(data)]]">
       <template is="dom-if" if="[[_isElementType(data, 'text')]]">
         <input
-          id="input"
+          class="input"
           type="text"
           value$="[[_value]]"
-          title="[[_value]]"
           disabled="[[disabled]]"
           on-change="_onChange">
       </template>
       <template is="dom-if" if="[[_isElementType(data, 'dropdown')]]">
           <template is="dom-if" if="[[!disabled]]">
             <vaadin-combo-box-light
-              id="input"
+              class="input"
               items="[[_suggestions]]"
               value="[[_value]]"
               attr-for-value="bind-value"
               on-value-changed="_onChange"
-              allow-custom-value>
+              allow-custom-value
+              disabled="[[disabled]]">
               <iron-input>
-                <input value="[[_value]]">
+                <input disabled="[[disabled]]">
               </iron-input>
             </vaadin-combo-box-light>
           </template>
-          <template is="dom-if" if="[[disabled]]">
-            <input id="input" disabled="[[disabled]]" hidden="[[!disabled]]" value="[[_value]]">
-          </template>
+          <input class="input" disabled="[[disabled]]" hidden="[[!disabled]]" value="[[_value]]">
 
       </template>
     </div>
@@ -113,8 +111,7 @@ Example of usage:
            */
           data: {
             type: Object,
-            notify: true,
-            observer: "_dataChanged"
+            notify: true
           },
 
           name: {
@@ -168,13 +165,20 @@ Example of usage:
         super.ready();
       }
 
-      _dataChanged(data){
-        // FORCE SYNC !
+      _computeValue( data){
+        if(!data){return}
+        var value = data.get("value") || ""; // CHROME I HATE YOU !!
+        this._forceValue(value);
+        return value;
+      }
+
+      // Make sure that the user edition is deleted !!!!!!!!!!
+      _forceValue(value){
         var scalar = this.$.scalar;
         if(scalar) {
-          var input = scalar.querySelector("#input");
+          var input = scalar.querySelector(".input");
           if(input){
-            input.value = data.get("value");
+            input.value = value;
           }
         };
       }
@@ -189,10 +193,6 @@ Example of usage:
         ]
       }
 
-      _computeValue( data){
-        if(!data){return}
-        return data.get("value");
-      }
 
       /** TODO: this should be computed */
       _getError(data){
