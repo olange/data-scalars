@@ -131,7 +131,8 @@ Example of usage:
             type: Boolean,
             notify: true,
             value: false,
-            reflectToAttribute: true
+            reflectToAttribute: true,
+            observer: "_disabledChanged"
           },
 
           /**
@@ -172,6 +173,14 @@ Example of usage:
         return value;
       }
 
+      _disabledChanged(disabled){
+        if(!this.data){return;}
+        if(this._value) {
+          // Make sure the value is updated when editing
+          this._forceValue(this._computeValue(this.data));
+        }
+      }
+
       // Make sure that the user edition is deleted !!!!!!!!!!
       _forceValue(value){
         var scalar = this.$.scalar;
@@ -181,6 +190,7 @@ Example of usage:
             input.value = value;
           }
         };
+        this._value = value;
       }
 
       _computeSuggestions( data){
