@@ -24,6 +24,7 @@ Example of usage:
       :host {
         display: block;
         @apply --layout-flex;
+        @apply --layout-horizontal;
       }
 
       div.content {
@@ -57,7 +58,7 @@ Example of usage:
         background: transparent;
       }
     </style>
-    <div id="scalar" class$="content [[_getErrorClass(data)]]" title="[[_getError(data)]]">
+    <div id="scalar" class$="content [[_getErrorClass(data)]]" title="[[_getTitle(data)]]">
       <template is="dom-if" if="[[_isElementType(data, 'text')]]">
         <input
           class="input"
@@ -202,8 +203,8 @@ Example of usage:
 
 
       /** TODO: this should be computed */
-      _getError(data){
-        if(!data || !data.get("error")){return;}
+      _getTitle(data){
+        if(!data || !data.get("error")){ return data.get("value"); }
         return "Error: "+data.get("error");
       }
 
