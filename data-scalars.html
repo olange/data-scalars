@@ -166,10 +166,7 @@ Example of usage:
 
       _computeValue( data){
         if(!data){return}
-        var value = data.get("value") || ""; // CHROME I HATE YOU !!
-        if(data.get("schema").get("type") == "datetime-local") {
-          value = (value.split(" ")).join("T");
-        }
+        var value = data.get("value") || "";
         this._forceValue(value);
         return value;
       }
