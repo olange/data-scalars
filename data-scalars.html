@@ -48,6 +48,7 @@ Example of usage:
       input,
       iron-input,
       vaadin-combo-box-light {
+        height: 20px;
         width: 100%;
         box-sizing: border-box;
       }
@@ -59,31 +60,30 @@ Example of usage:
       }
     </style>
     <div id="scalar" class$="content [[_getErrorClass(data)]]" title="[[_getTitle(data)]]">
-      <template is="dom-if" if="[[_isElementType(data, 'text')]]">
+      <template is="dom-if" if="[[_isElementTypePrimitive(data)]]">
         <input
           class="input"
-          type="text"
+          type="[[_getElementType(data)]]"
           value$="[[_value]]"
           disabled="[[disabled]]"
           on-change="_onChange">
       </template>
       <template is="dom-if" if="[[_isElementType(data, 'dropdown')]]">
-          <template is="dom-if" if="[[!disabled]]">
-            <vaadin-combo-box-light
-              class="input"
-              items="[[_suggestions]]"
-              value="[[_value]]"
-              attr-for-value="bind-value"
-              on-value-changed="_onChange"
-              allow-custom-value
-              disabled="[[disabled]]">
-              <iron-input>
-                <input disabled="[[disabled]]">
-              </iron-input>
-            </vaadin-combo-box-light>
-          </template>
-          <input class="input" disabled="[[disabled]]" hidden="[[!disabled]]" value="[[_value]]">
-
+        <template is="dom-if" if="[[!disabled]]">
+          <vaadin-combo-box-light
+            class="input"
+            items="[[_suggestions]]"
+            value="[[_value]]"
+            attr-for-value="bind-value"
+            on-value-changed="_onChange"
+            allow-custom-value
+            disabled="[[disabled]]">
+            <iron-input>
+              <input disabled="[[disabled]]">
+            </iron-input>
+          </vaadin-combo-box-light>
+        </template>
+        <input class="input" disabled="[[disabled]]" hidden="[[!disabled]]" value="[[_value]]">
       </template>
     </div>
   </template>
@@ -167,6 +167,9 @@ Example of usage:
       _computeValue( data){
         if(!data){return}
         var value = data.get("value") || ""; // CHROME I HATE YOU !!
+        if(data.get("schema").get("type") == "datetime-local") {
+          value = (value.split(" ")).join("T");
+        }
         this._forceValue(value);
         return value;
       }
@@ -220,6 +223,24 @@ Example of usage:
         var value = e.currentTarget.value;
         var event = new CustomEvent('change', {'detail': {name: this.name, value: value}})
         this.dispatchEvent(event);
+      }
+
+      _getElementType(data){
+        if(data && data.get("schema") && data.get("schema").get("type")){
+          return  data.get("schema").get("type");
+        } else {
+          return 'text';
+        }
+      }
+
+      _isElementTypePrimitive(data){
+        var primitiveTypes = ['text', 'date', 'datetime-local', 'number'];
+        if(data && data.get("schema") && data.get("schema").get("type")){
+          return primitiveTypes.indexOf(
+            data.get("schema").get("type")) > -1;
+        } else {
+          return true;
+        }
       }
 
       /**
