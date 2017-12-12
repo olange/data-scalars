@@ -204,7 +204,8 @@ Example of usage:
 
       /** TODO: this should be computed */
       _getTitle(data){
-        if(!data || !data.get("error")){ return data.get("value"); }
+        if( !data) {return undefined; }
+        if( !data.get("error")){ return data.get("value"); }
         return "Error: "+data.get("error");
       }
 
