@@ -54,6 +54,12 @@ Example of usage:
         box-sizing: border-box;
       }
 
+      vaadin-combo-box-light .dropdown-item {
+        font-family: inherit;
+        font-size: 10px;
+        color: red;
+      }
+
       select[disabled],
       input[disabled]{
         border: none;
@@ -79,6 +85,9 @@ Example of usage:
             on-value-changed="_onChange"
             allow-custom-value
             disabled="[[disabled]]">
+            <template>
+              <div style="font-size: 10px; font-family:'Roboto'">[[item.label]]</div>
+            </template>
             <iron-input>
               <input disabled="[[disabled]]">
             </iron-input>
@@ -193,13 +202,10 @@ Example of usage:
       }
 
       _computeSuggestions( data){
-        return [
-          {label: "predefined1", value: "predefined1"},
-          {label: "predefined2", value: "predefined2"},
-          {label: "predefined3", value: "predefined3"},
-          {label: "predefined4", value: "predefined4"},
-          {label: "predefined5", value: "predefined5"},
-        ]
+        if(!data){ return}
+        if(data.get("schema") && data.get("schema").get("suggestions")){
+          return data.get("schema").get("suggestions").toJS()
+        }
       }
 
 
