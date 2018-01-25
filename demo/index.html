@@ -11,6 +11,7 @@
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../data-scalars.html">
+    <script src="../../immutable/dist/immutable.min.js"></script>
 
     <custom-style>
       <style is="custom-style" include="demo-pages-shared-styles">
@@ -22,7 +23,37 @@
       <h3>Basic data-scalars demo</h3>
       <demo-snippet>
         <template>
-          <data-scalars></data-scalars>
+
+          <dom-bind>
+            <template>
+              <style>
+                #container {
+                  display: block;
+                }
+              </style>
+              <div id="container">
+                <data-scalars id="ds" name="a dropdown"></data-scalars>
+                <data-scalars id="ds2" name="an error"></data-scalars>
+              </div>
+              <script>
+                var ds = document.querySelector("#ds");
+                ds.data = Immutable.fromJS({
+                  value: "test",
+                  schema: {
+                    type: "dropdown",
+                    suggestions: [
+                      {label: "value1", value: "value1"}, {label: "value2", value: "vallue2"}
+                    ]
+                  }
+                });
+                ds2.data = Immutable.fromJS({
+                  value: "this is a fiield",
+                  schema: {type: "text"},
+                  error: "There is an mistake"
+                });
+              </script>
+            </template>
+          </dom-bind>
         </template>
       </demo-snippet>
     </div>

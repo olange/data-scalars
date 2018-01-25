@@ -2,10 +2,11 @@
   "name": "data-scalars",
   "description": "Automatic representation of a scalar value",
   "main": "data-scalars.html",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.2.0",
-    "vaadin-combo-box": "vaadin/vaadin-combo-box",
+    "vaadin-combo-box": "vaadin/vaadin-combo-box#v4.0.0-alpha5",
+    "immutable": "facebook/immutable-js#v4.0.0-rc.4",
     "iron-input": "PolymerElements/iron-input"
   },
   "devDependencies": {
@@ -14,6 +15,9 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "resolutions": {
-    "polymer": "^2.2.0"
+    "polymer": "^2.2.0",
+    "vaadin-control-state-mixin": "^2.0.0",
+    "vaadin-text-field": "^2.0.0",
+    "iron-iconset-svg": "^2.1.0"
   }
 }
