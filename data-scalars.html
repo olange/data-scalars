@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="../vaadin-combo-box/vaadin-combo-box-light.html">
-
 
 <!--
 Automatic representation of a scalar value as Polymer Elements (Iron and Paper) – in either read-only or editable mode.
@@ -15,9 +15,6 @@ Example of usage:
     <data-scalars data="{{dataEgg}}" editable="true|false"></data-scalars>
   </data-point>
 -->
-
-
-
 <dom-module id="data-scalars">
   <template>
     <style>
@@ -52,12 +49,6 @@ Example of usage:
         height: 20px;
         width: 100%;
         box-sizing: border-box;
-      }
-
-      vaadin-combo-box-light .dropdown-item {
-        font-family: inherit;
-        font-size: 10px;
-        color: red;
       }
 
       select[disabled],
@@ -99,6 +90,7 @@ Example of usage:
   </template>
 
   <script>
+    /* jshint esversion:6, asi:true */
     /**
      * `data-scalars`
      * Automatic representation of a scalar value
@@ -197,7 +189,7 @@ Example of usage:
           if(input){
             input.value = value;
           }
-        };
+        }
         this._value = value;
       }
 
