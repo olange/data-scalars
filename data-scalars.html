@@ -136,7 +136,8 @@ Example of usage:
             notify: true,
             value: false,
             reflectToAttribute: true,
-            observer: "_disabledChanged"
+            observer: "_disabledChanged",
+            computed: "_computeDisabled(data)"
           },
 
           /** Internal computed element type */
@@ -184,6 +185,14 @@ Example of usage:
         if(value == undefined) { value = ""; }
         this._forceValue(value)
         return value;
+      }
+
+      _computeDisabled( data) {
+        if(data.get("schema")){
+          return data.get("schema").get("disabled") || false;
+        } else {
+          return false;
+        }
       }
 
       /** When `disabled` is changed, update the value to make sure it's correct in the input field */
