@@ -59,19 +59,19 @@ Example of usage:
         background: transparent;
       }
     </style>
-    <div id="scalar" class$="content [[_getErrorClass(data)]]" title="[[_getTitle(data)]]">
-      <template is="dom-if" if="[[_isElementTypePrimitive(data, disabled, _value)]]">
+    <div id="scalar" class$="content [[_getErrorClass(data)]]" title="[[_title]]">
+      <template is="dom-if" if="[[_isDataOfTypePrimitive(data)]]">
         <input
           class="input primitive"
-          type$="[[_getElementType(data)]]"
+          type$="[[_getType(data)]]"
           value="[[_value]]"
           disabled="[[disabled]]"
           on-change="_onChange">
       </template>
-      <template is="dom-if" if="[[_isElementType(data, 'dropdown')]]">
+      <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
         <template is="dom-if" if="[[!disabled]]">
           <vaadin-combo-box-light
-            class="input"
+            class="input dropdown"
             items="[[_suggestions]]"
             value="[[_value]]"
             attr-for-value="bind-value"
@@ -116,6 +116,8 @@ Example of usage:
             notify: true
           },
 
+
+          /* Name of the data-scalar */
           name: {
             type: String,
           },
@@ -137,19 +139,21 @@ Example of usage:
             observer: "_disabledChanged"
           },
 
-          /**
-           *
-           */
+          /** Internal computed element type */
           _elementType: {
             type: String,
             value: "input"
           },
 
+
+          /* Suggestions that are computed using the schema */
           _suggestions: {
             type: Array,
             computed: "_computeSuggestions( data)"
           },
 
+
+          /* Internal computed value */
           _value: {
             type: String,
             computed: "_computeValue( data)"
@@ -160,6 +164,11 @@ Example of usage:
             value: () => {
               return ["text", "dropdown"];
             }
+          },
+
+          _title: {
+            type: String,
+            computed: "_computeTitle(data)"
           }
         };
       }
@@ -168,6 +177,7 @@ Example of usage:
         super.ready();
       }
 
+      /** Compute the `_value` and update its input field to make sure it is correct */
       _computeValue( data){
         if(!data){return}
         var value = data.get("value");
@@ -176,6 +186,7 @@ Example of usage:
         return value;
       }
 
+      /** When `disabled` is changed, update the value to make sure it's correct in the input field */
       _disabledChanged(disabled){
         if(!this.data){return;}
         if(this._value) {
@@ -184,7 +195,7 @@ Example of usage:
         }
       }
 
-      // Make sure that the user edition is deleted !!!!!!!!!!
+      /* Make sure that the user edition is deleted and replaced by the default value */
       _forceValue(value){
         var scalar = this.$.scalar;
         if(scalar) {
@@ -196,6 +207,7 @@ Example of usage:
         this._value = value;
       }
 
+      /** Retrieves the suggestions from the schema */
       _computeSuggestions( data){
         if(!data){ return}
         if(data.get("schema") && data.get("schema").get("suggestions")){
@@ -204,13 +216,17 @@ Example of usage:
       }
 
 
-      /** TODO: this should be computed */
-      _getTitle(data){
+      /**
+        * Compute the title that is display when hovering a field. If there is a specific error
+        * in the schema, the error will be shown.
+        */
+      _computeTitle(data){
         if( !data) {return undefined; }
         if( !data.get("error")){ return data.get("value"); }
         return "Error: "+data.get("error");
       }
 
+      /** If there is an error, the `error` class is returned to the input field */
       _getErrorClass(data){
         if(!data || !data.get("error")){return;}
         if(data.get("error")){
@@ -218,13 +234,19 @@ Example of usage:
         }
       }
 
+      /**
+        * Dispatch a custom event 'change' when the input changes.
+        * The event carries the name and value of the input in its details.
+        *   {'detail': {name: "the name", value: "the value"}}
+        */
       _onChange(e){
         var value = e.currentTarget.value;
         var event = new CustomEvent('change', {'detail': {name: this.name, value: value}})
         this.dispatchEvent(event);
       }
 
-      _getElementType(data){
+      /** Retrieves the type from the schema */
+      _getType(data){
         if(data && data.get("schema") && data.get("schema").get("type")){
           return  data.get("schema").get("type");
         } else {
@@ -232,11 +254,16 @@ Example of usage:
         }
       }
 
-      _isElementTypePrimitive(data){
+      /**
+        * Checks if the type, given from the schema, is an HTML primitive type.
+        * This is used to know if we can use an HTML tag instead of a custom component
+        * to present the data value.
+        */
+      _isDataOfTypePrimitive(data){
         var primitiveTypes = ['text', 'date', 'datetime-local', 'number'];
-        if(data && data.get("schema") && data.get("schema").get("type")){
-          return primitiveTypes.indexOf(
-            data.get("schema").get("type")) > -1;
+        var type = this._getType(data);
+        if(type) {
+          return primitiveTypes.indexOf( type) > -1;
         } else {
           return true;
         }
@@ -245,13 +272,13 @@ Example of usage:
       /**
         * Returns true if the data is of type `elType`.
         * By default and if the type is not specified, it will return true as if `elType` == 'text'
-        * TODO: use _implementedTypes and throw a warning
         */
-      _isElementType(data, elType){
-        if(data && data.get("schema") && data.get("schema").get("type")){
-          return data.get("schema").get("type") == elType;
+      _isDataOfType(data, typeToCheck){
+        var type = this._getType(data);
+        if(type){
+          return type == typeToCheck;
         } else {
-          return elType == 'text';
+          return typeToCheck == 'text';
         }
       }
     }
