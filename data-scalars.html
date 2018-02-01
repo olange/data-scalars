@@ -60,11 +60,11 @@ Example of usage:
       }
     </style>
     <div id="scalar" class$="content [[_getErrorClass(data)]]" title="[[_getTitle(data)]]">
-      <template is="dom-if" if="[[_isElementTypePrimitive(data)]]">
+      <template is="dom-if" if="[[_isElementTypePrimitive(data, disabled, _value)]]">
         <input
-          class="input"
-          type="[[_getElementType(data)]]"
-          value$="[[_value]]"
+          class="input primitive"
+          type$="[[_getElementType(data)]]"
+          value="[[_value]]"
           disabled="[[disabled]]"
           on-change="_onChange">
       </template>
@@ -170,8 +170,9 @@ Example of usage:
 
       _computeValue( data){
         if(!data){return}
-        var value = data.get("value") || "";
-        this._forceValue(value);
+        var value = data.get("value");
+        if(value == undefined) { value = ""; }
+        this._forceValue(value)
         return value;
       }
 
@@ -179,7 +180,7 @@ Example of usage:
         if(!this.data){return;}
         if(this._value) {
           // Make sure the value is updated when editing
-          this._forceValue(this._computeValue(this.data));
+          this._computeValue(this.data);
         }
       }
 
