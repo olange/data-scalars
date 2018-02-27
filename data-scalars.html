@@ -331,10 +331,16 @@ Example of usage:
         var type = this._getType(data);
         if( ['date', 'datetime-local'].indexOf(type) > -1) {
           var date = new Date(value);
-          var day = date.getDate()+"".length > 1 ? date.getDate() : '0'+date.getDate();
+          var day = (date.getDate()+"").length > 1 ? date.getDate() : '0'+date.getDate();
           var month = ((date.getMonth()+1)+"").length > 1 ? (date.getMonth()) : '0'+(date.getMonth()+1);
           var year = date.getFullYear();
-          return year+"-"+month+"-"+day+" "+date.getHours()+":"+date.getMinutes();
+          var hours = (date.getHours()+"").length > 1 ? (date.getHours()) : '0'+date.getHours();
+          var minutes = (date.getMinutes()+"").length > 1 ? (date.getMinutes()) : '0'+date.getMinutes();
+          var string = year+"-"+month+"-"+day;
+          if( type == 'datetime-local') {
+            string += " "+hours+":"+minutes;
+          }
+          return string;
         }
         return value;
       }
