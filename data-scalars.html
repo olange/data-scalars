@@ -26,8 +26,10 @@ Example of usage:
       }
 
       div.content {
+        font-size: 12px;
         width: 100%;
         height: 23px;
+        line-height: 23px;
         position: relative;
         box-sizing: border-box;
         border: 1px solid transparent; /* Make sure every cell have same height */
@@ -60,44 +62,51 @@ Example of usage:
       }
     </style>
     <div id="scalar" class$="content [[_getErrorClass(data)]]" title="[[_title]]">
-
-      <template is="dom-if" if="[[_isDataOfTypePrimitive(data)]]">
-        <input
-          class="input primitive"
-          type$="[[_getType(data)]]"
-          value="[[_value]]"
-          disabled="[[disabled]]"
-          on-change="_onChange">
+      <template is="dom-if" if="[[!editable]]">
+        <div title="[[_computeTitle(data)]]">
+          [[_formatValue(data, _value)]]
+        </div>
       </template>
 
-      <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
-        <template is="dom-if" if="[[!disabled]]">
-          <vaadin-combo-box-light
-            class="input dropdown"
-            items="[[_suggestions]]"
-            value="[[_value]]"
-            attr-for-value="bind-value"
-            on-value-changed="_onChange"
-            allow-custom-value
-            disabled="[[disabled]]">
-            <template>
-              <div style="font-size: 10px; font-family:'Roboto'">[[item.label]]</div>
-            </template>
-            <iron-input>
-              <input disabled="[[disabled]]">
-            </iron-input>
-          </vaadin-combo-box-light>
-        </template>
-      </template>
-
-      <template is="dom-if" if="[[_isDataOfType(data, 'checkbox')]]">
-        <template is="dom-if" if="[[!disabled]]">
+      <template is="dom-if" if="[[editable]]">
+        <template is="dom-if" if="[[_isDataOfTypePrimitive(data)]]">
           <input
-            class="input checkbox"
-            type="checkbox"
-            checked="[[_value]]"
+            class="input primitive"
+            type$="[[_getType(data)]]"
+            value="[[_value]]"
             disabled="[[disabled]]"
-            on-change="_onTick">
+            on-change="_onChange">
+        </template>
+
+        <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
+          <template is="dom-if" if="[[!disabled]]">
+            <vaadin-combo-box-light
+              class="input dropdown"
+              items="[[_suggestions]]"
+              value="[[_value]]"
+              attr-for-value="bind-value"
+              on-value-changed="_onChange"
+              allow-custom-value
+              disabled="[[disabled]]">
+              <template>
+                <div style="font-size: 10px; font-family:'Roboto'">[[item.label]]</div>
+              </template>
+              <iron-input>
+                <input disabled="[[disabled]]">
+              </iron-input>
+            </vaadin-combo-box-light>
+          </template>
+        </template>
+
+        <template is="dom-if" if="[[_isDataOfType(data, 'checkbox')]]">
+          <template is="dom-if" if="[[!disabled]]">
+            <input
+              class="input checkbox"
+              type="checkbox"
+              checked="[[_value]]"
+              disabled="[[disabled]]"
+              on-change="_onTick">
+          </template>
         </template>
       </template>
     </div>
@@ -315,6 +324,18 @@ Example of usage:
         } else {
           return typeToCheck == 'text';
         }
+      }
+
+      _formatValue(data, value){
+        if(!value){ return value; }
+        var type = this._getType(data);
+        if( ['date', 'datetime-local'].indexOf(type) > -1) {
+          var date = new Date(value);
+          var day = date.getDate()+"".length > 1 ? date.getDate() : '0'+date.getDate();
+          var month = ((date.getMonth()+1)+"").length > 1 ? (date.getMonth()) : '0'+(date.getMonth()+1);
+          return day+"/"+month+"/"+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes();
+        }
+        return value;
       }
     }
 
