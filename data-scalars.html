@@ -296,7 +296,7 @@ Example of usage:
       /** Retrieves the type from the schema */
       _getType(data){
         if(data && data.get("schema") && data.get("schema").get("type")){
-          return  data.get("schema").get("type");
+          return  data.get("schema").get("type").toLowerCase();
         } else {
           return 'text';
         }
