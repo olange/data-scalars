@@ -48,11 +48,19 @@ Example of usage:
       input,
       iron-input,
       vaadin-combo-box-light {
-        --lumo-primary-text-color: red;
         font-family: inherit;
         height: 20px;
         width: 100%;
         box-sizing: border-box;
+      }
+
+      vaadin-combo-box-light {
+        --lumo-primary-text-color: red;
+      }
+
+      input {
+        border: none;
+        border-bottom: 1px solid #dfdfdf;
       }
 
       select[disabled],
