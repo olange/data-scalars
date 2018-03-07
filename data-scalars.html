@@ -216,8 +216,16 @@ Example of usage:
       _computeValue( data){
         if(!data){return}
         var value = data.get("value");
+
+        // Translate undefined to empty string
         if(value == undefined) { value = ""; }
-        this._forceValue(value)
+
+        // Make sure to refresh the input field when the current user
+        // is not editing the field.
+        // NOTE: if the underlying data changed and the user is editing,
+        //       the input field value should NOT be updated.
+        else if(!this.editable){ this._forceValue( value); }
+
         return value;
       }
 
@@ -290,12 +298,14 @@ Example of usage:
         *   {'detail': {name: "the name", value: "the value"}}
         */
       _onChange(e){
-        this._dispatchChangeEvent(e.currentTarget.value)
+        var value = e.currentTarget.value;
+        this._dispatchChangeEvent( value)
       }
 
       /** Dispatch a custom event 'change' when the checkbox attribut has changed */
       _onTick(e){
-        this._dispatchChangeEvent( e.currentTarget.checked)
+        var checked = e.currentTarget.checked;
+        this._dispatchChangeEvent( checked);
       }
 
       /** Retrieves the type from the schema */
