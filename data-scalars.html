@@ -63,6 +63,7 @@ Example of usage:
       input,
       select,
       iron-input {
+        padding: 0px 2px;
         font-size: inherit;
         border: none;
         border-bottom: 1px solid #dfdfdf;
@@ -72,6 +73,10 @@ Example of usage:
       input[disabled]{
         border: none;
         background: transparent;
+      }
+
+      input{
+        outline: none;
       }
     </style>
     <div id="scalar" class$="content [[_getErrorClass(data)]]" title="[[_title]]">
@@ -88,6 +93,7 @@ Example of usage:
             type$="[[_getType(data)]]"
             value="[[_value]]"
             disabled="[[disabled]]"
+            placeholder="[[placeholder]]"
             on-change="_onChange">
         </template>
 
@@ -95,6 +101,7 @@ Example of usage:
           <template is="dom-if" if="[[!disabled]]">
             <vaadin-combo-box-light
               class="input dropdown"
+              placeholder="[[placeholder]]"
               items="[[_suggestions]]"
               value="[[_value]]"
               attr-for-value="bind-value"
@@ -174,10 +181,15 @@ Example of usage:
             computed: "_computeDisabled(data)"
           },
 
+          /** Placeholder for the field */
+          placeholder: {
+            type: String
+          },
+
           /** Internal computed element type */
           _elementType: {
             type: String,
-            value: "input"
+            value: "text"
           },
 
 
