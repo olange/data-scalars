@@ -4,7 +4,7 @@
   "main": "data-scalars.html",
   "version": "1.1.9",
   "dependencies": {
-    "polymer": "Polymer/polymer#^2.5.0",
+    "polymer": "Polymer/polymer#^2.6.0",
     "vaadin-combo-box": "vaadin/vaadin-combo-box#v4.0.0-beta1",
     "immutable": "facebook/immutable-js#v4.0.0-rc.4",
     "iron-input": "PolymerElements/iron-input"
