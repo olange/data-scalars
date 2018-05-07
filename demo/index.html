@@ -32,30 +32,34 @@
                 }
               </style>
               <div id="container">
-                <data-scalars id="ds" name="a dropdown"></data-scalars>
+                <data-scalars id="ds" editable="true" name="a dropdown"></data-scalars>
                 <data-scalars id="ds2" name="an error"></data-scalars>
                 <data-scalars id="ds3" editable="true" name="an editable"></data-scalars>
+                <data-scalars id="ds4" editable="true" name="an editable checkbox"></data-scalars>
               </div>
               <script>
                 var ds = document.querySelector("#ds");
                 ds.data = Immutable.fromJS({
-                  value: "test",
+                  value: "This is a dropdown field",
                   schema: {
                     type: "dropdown",
                     suggestions: [
-                      {label: "value1", value: "value1"}, {label: "value2", value: "vallue2"}
+                      {label: "value1", value: "value1"}, {label: "value2", value: "value2"}
                     ]
                   }
                 });
                 ds2.data = Immutable.fromJS({
-                  value: "this is a field",
+                  value: "this is a field with an error",
                   schema: {type: "text"},
                   error: "There is an mistake"
                 });
                 ds3.data = Immutable.fromJS({
-                  value: "this is an editable field",
-                  editable: true,
-                  schema: {type: "text"}
+                  value: "this is an editable date",
+                  schema: {type: "date"}
+                });
+                ds4.data = Immutable.fromJS({
+                  value: "true",
+                  schema: {type: "checkbox"}
                 });
               </script>
             </template>

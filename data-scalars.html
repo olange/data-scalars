@@ -95,7 +95,7 @@ Example of usage:
             disabled="[[disabled]]"
             placeholder="[[placeholder]]"
             on-change="_onChange"
-            on-keyup="_onKeyUp">
+            on-keydown="_onKeydown">
         </template>
 
         <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
@@ -113,7 +113,7 @@ Example of usage:
                 <div style="font-size: 10px; font-family:'Roboto'">[[item.label]]</div>
               </template>
               <iron-input>
-                <input disabled="[[disabled]]">
+                <input disabled="[[disabled]]" on-keydown="_onKeydown">
               </iron-input>
             </vaadin-combo-box-light>
           </template>
@@ -126,7 +126,8 @@ Example of usage:
               type="checkbox"
               checked="[[_value]]"
               disabled="[[disabled]]"
-              on-change="_onTick">
+              on-change="_onTick"
+              on-keydown="_onKeydown">
           </template>
         </template>
       </template>
@@ -321,7 +322,8 @@ Example of usage:
        *     - Escape key will dispatch the 'cancel' event
        *     - Enter key will dispatch the 'validate' event
        */
-      _onKeyUp(e) {
+      _onKeydown(e) {
+        this._onChange(e); // Make sure we capture the last onchange event
         if(e.code == 'Enter') {
           var event = new Event('validate');
           this.dispatchEvent(event);
