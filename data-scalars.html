@@ -94,7 +94,8 @@ Example of usage:
             value="[[_value]]"
             disabled="[[disabled]]"
             placeholder="[[placeholder]]"
-            on-change="_onChange">
+            on-change="_onChange"
+            on-keyup="_onKeyUp">
         </template>
 
         <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
@@ -312,6 +313,22 @@ Example of usage:
       _onChange(e){
         var value = e.currentTarget.value;
         this._dispatchChangeEvent( value)
+      }
+
+      /**
+       * Dispatch an event when some special keys are used.
+       * Eg:
+       *     - Escape key will dispatch the 'cancel' event
+       *     - Enter key will dispatch the 'validate' event
+       */
+      _onKeyUp(e) {
+        if(e.code == 'Enter') {
+          var event = new Event('validate');
+          this.dispatchEvent(event);
+        } else if (e.code == "Escape") {
+          var event = new Event('cancel');
+          this.dispatchEvent(event);
+        }
       }
 
       /** Dispatch a custom event 'change' when the checkbox attribut has changed */

@@ -34,6 +34,7 @@
               <div id="container">
                 <data-scalars id="ds" name="a dropdown"></data-scalars>
                 <data-scalars id="ds2" name="an error"></data-scalars>
+                <data-scalars id="ds3" editable="true" name="an editable"></data-scalars>
               </div>
               <script>
                 var ds = document.querySelector("#ds");
@@ -47,9 +48,14 @@
                   }
                 });
                 ds2.data = Immutable.fromJS({
-                  value: "this is a fiield",
+                  value: "this is a field",
                   schema: {type: "text"},
                   error: "There is an mistake"
+                });
+                ds3.data = Immutable.fromJS({
+                  value: "this is an editable field",
+                  editable: true,
+                  schema: {type: "text"}
                 });
               </script>
             </template>
