@@ -1,0 +1,22 @@
+{
+  "name": "data-scalars",
+  "version": "1.1.14",
+  "description": "Automatic representation of a _scalar_ value as [Polymer Elements](https://elements.polymer-project.org) (Iron and Paper) - in either read-only or editable mode.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olange/data-scalars.git"
+  },
+  "author": "Yves Lange <ylange@petit-atelier.ch>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/olange/data-scalars/issues"
+  },
+  "homepage": "https://github.com/olange/data-scalars#readme"
+}
