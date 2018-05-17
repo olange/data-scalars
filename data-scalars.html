@@ -92,6 +92,7 @@ Example of usage:
             class="input primitive"
             type$="[[_getType(data)]]"
             value="[[_value]]"
+            title="[[_title]]"
             disabled="[[disabled]]"
             placeholder="[[placeholder]]"
             on-change="_onChange"
@@ -217,7 +218,7 @@ Example of usage:
 
           _title: {
             type: String,
-            computed: "_computeTitle(data)"
+            computed: "_computeTitle(data, title)"
           }
         };
       }
@@ -263,7 +264,8 @@ Example of usage:
         * Compute the title that is display when hovering a field. If there is a specific error
         * in the schema, the error will be shown.
         */
-      _computeTitle(data){
+      _computeTitle(data, title){
+        if( title != undefined){ return title; }
         if( !data) {return undefined; }
         if( !data.get("error")){ return data.get("value"); }
         return "Error: "+data.get("error");
