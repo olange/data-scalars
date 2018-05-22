@@ -41,6 +41,13 @@ Example of usage:
         background-color: rgb(248, 183, 183);
       }
 
+      div.content .element.number {
+        text-align: right;
+      }
+      div.content .element.financial {
+        /** Nothing yet */
+      }
+
       div[hidden]{
         display: none;
       }
@@ -54,6 +61,13 @@ Example of usage:
         height: 20px;
         width: 100%;
         box-sizing: border-box;
+      }
+
+      /** Turn off input[type=number] arrows/spiner */
+      input[type=number]::-webkit-inner-spin-button,
+      input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
       }
 
       vaadin-combo-box-light {
@@ -80,8 +94,9 @@ Example of usage:
       }
     </style>
     <div id="scalar" class$="content [[_getErrorClass(data)]]" title="[[_title]]">
+      <span style="display: none">[[_value]]</span>
       <template is="dom-if" if="[[!editable]]">
-        <div title="[[_computeTitle(data)]]">
+        <div title="[[_computeTitle(data)]]" class$="element [[_elementType]] [[_elementVariant]]">
           [[_formatValue(data, _value)]]
         </div>
       </template>
@@ -89,7 +104,7 @@ Example of usage:
       <template is="dom-if" if="[[editable]]">
         <template is="dom-if" if="[[_isDataOfTypePrimitive(data)]]">
           <input
-            class="input primitive"
+            class$="input element [[_elementType]] [[_elementVariant]]"
             type$="[[_getType(data)]]"
             value="[[_value]]"
             title="[[_title]]"
@@ -102,7 +117,7 @@ Example of usage:
         <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
           <template is="dom-if" if="[[!disabled]]">
             <vaadin-combo-box-light
-              class="input dropdown"
+              class$="input element dropdown [[_elementType]] [[_elementVariant]]"
               placeholder="[[placeholder]]"
               items="[[_suggestions]]"
               value="[[_value]]"
@@ -123,7 +138,7 @@ Example of usage:
         <template is="dom-if" if="[[_isDataOfType(data, 'checkbox')]]">
           <template is="dom-if" if="[[!disabled]]">
             <input
-              class="input checkbox"
+              class$="input element checkbox [[_elementType]] [[_elementVariant]]"
               type="checkbox"
               checked="[[_value]]"
               disabled="[[disabled]]"
@@ -153,7 +168,20 @@ Example of usage:
            * The given `dataEgg`. A `dataEgg` is one element of the `dataNugget`.
            * Example:
            *
+           * ```
            *    dataEgg = {value: …, schema: …, format: … [, metadata: …]}
+           *
+           *    schema = {
+           *      editable: true|false,
+           *      type: text|number|date|boolean|dropdown,
+           *      variant: ...,
+           *      hidden: true|false,
+           *
+           *    schema.variant = << depends on schema.type >>
+           *      text:   default
+           *      number: financial|default;
+           *      date:   default
+           * ```
            */
           data: {
             type: Object,
@@ -192,30 +220,31 @@ Example of usage:
           /** Internal computed element type */
           _elementType: {
             type: String,
-            value: "text"
+            value: "text",
+            computed: "_computeElementType(data)"
+          },
+
+          /** Internal computed element variant type */
+          _elementVariant: {
+            type: String,
+            value: "default",
+            computed: "_computeElementVariant(data)"
           },
 
 
-          /* Suggestions that are computed using the schema */
+          /** Suggestions that are computed from the schema */
           _suggestions: {
             type: Array,
             computed: "_computeSuggestions( data)"
           },
 
-
-          /* Internal computed value */
+          /** Internal computed value */
           _value: {
             type: String,
             computed: "_computeValue( data)"
           },
 
-          _implementedTypes: {
-            type: Array,
-            value: () => {
-              return ["text", "dropdown"];
-            }
-          },
-
+          /** Internal computed tooltip title */
           _title: {
             type: String,
             computed: "_computeTitle(data, title)"
@@ -244,15 +273,15 @@ Example of usage:
         return value;
       }
 
+      /** Computes the disable option from the schema */
       _computeDisabled( data) {
         if(data.get("schema")){
           return data.get("schema").get("disabled") || false;
-        } else {
-          return false;
         }
+        return false;
       }
 
-      /** Retrieves the suggestions from the schema */
+      /** Computes the suggestions from the schema */
       _computeSuggestions( data){
         if(!data){ return}
         if(data.get("schema") && data.get("schema").get("suggestions")){
@@ -261,7 +290,7 @@ Example of usage:
       }
 
       /**
-        * Compute the title that is display when hovering a field. If there is a specific error
+        * Computes the title that is display when hovering a field. If there is a specific error
         * in the schema, the error will be shown.
         */
       _computeTitle(data, title){
@@ -269,6 +298,16 @@ Example of usage:
         if( !data) {return undefined; }
         if( !data.get("error")){ return data.get("value"); }
         return "Error: "+data.get("error");
+      }
+
+      /** Computes the element type from the schema */
+      _computeElementType( data) {
+        return this._getType( data);
+      }
+
+      /** Computes the element variant type from the schema */
+      _computeElementVariant( data) {
+        return this._getVariant( data);
       }
 
       /** Helpers */
@@ -350,6 +389,14 @@ Example of usage:
         }
       }
 
+      _getVariant(data) {
+        if(data && data.get("schema") && data.get("schema").get("variant")){
+          return  data.get("schema").get("variant").toLowerCase();
+        } else {
+          return 'default';
+        }
+      }
+
       /**
         * Checks if the type, given from the schema, is an HTML primitive type.
         * This is used to know if we can use an HTML tag instead of a custom component
@@ -385,7 +432,11 @@ Example of usage:
       _formatValue(data, value){
         if(!value){ return value; }
         var type = this._getType(data);
-        if( ['date', 'datetime-local'].indexOf(type) > -1) {
+        var variant = this._getVariant(data);
+        if( type == 'number' && variant == 'financial') {
+          return this._financialNumber(value);
+
+        } else if( ['date', 'datetime-local'].indexOf(type) > -1) {
           var date = new Date(value);
           var day = (date.getDate()+"").length > 1 ? date.getDate() : '0'+date.getDate();
           var month = ((date.getMonth()+1)+"").length > 1 ? (date.getMonth()) : '0'+(date.getMonth()+1);
@@ -400,7 +451,15 @@ Example of usage:
         }
         return value;
       }
+
+      _financialNumber(x) {
+        var parts = x.toString().split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+        parts[1] = (parseFloat("0."+parts[1]).toFixed(2).split("."))[1] || "00";
+        return parts.join(".");
+      }
     }
+
 
     window.customElements.define(DataScalars.is, DataScalars);
   </script>
