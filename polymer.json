@@ -3,5 +3,7 @@
     "rules": [
       "polymer-2"
     ]
-  }
+  },
+  "extraDependencies": [
+  ]
 }

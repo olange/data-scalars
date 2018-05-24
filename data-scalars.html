@@ -115,9 +115,38 @@ Example of usage:
       <!-- Icon -->
       <template is="dom-if" if="[[_isDataOfType(data, 'icon')]]">
         <template is="dom-if" if="[[editable]]">
+          <input
+            class$="input element [[_elementType]] [[_elementVariant]]"
+            value="[[_value]]"
+            title="[[_title]]"
+            disabled="[[disabled]]"
+            placeholder="[[placeholder]]"
+            on-change="_onChange"
+            on-keydown="_onKeydown">
         </template>
         <template is="dom-if" if="[[!editable]]">
-          <iron-icon icon$="[[_getIconName(_suggestionsByLabel, _value)]]"></iron-icon>
+          <template is="dom-if" if="[[__equals(_elementVariant, 'default')]]">
+            <iron-icon icon$="[[_getIconName(_suggestionsByLabel, _value)]]"></iron-icon>
+          </template>
+          <template is="dom-if" if="[[__equals(_elementVariant, 'flag')]]">
+            TODO FLAG [[_getFlagName(_suggestionsByLabel, _value)]]
+          </template>
+        </template>
+      </template>
+
+      <!-- Flag -->
+      <template is="dom-if" if="[[_isDataOfType(data, 'flag')]]">
+        <template is="dom-if" if="[[editable]]">
+          <input
+            class$="input element [[_elementType]] [[_elementVariant]]"
+            value="[[_value]]"
+            title="[[_title]]"
+            disabled="[[disabled]]"
+            placeholder="[[placeholder]]"
+            on-change="_onChange"
+            on-keydown="_onKeydown">
+        </template>
+        <template is="dom-if" if="[[!editable]]">
         </template>
       </template>
 
@@ -501,6 +530,14 @@ Example of usage:
         return icon;
       }
 
+      _getFlagName(_suggestionsByLabel, _value){
+        var flag = _value;
+        if(_suggestionsByLabel && _suggestionsByLabel[_value]) {
+          flag = _suggestionsByLabel[_value];
+        }
+        return flag;
+      }
+
       _formatValue(data, value){
         if(!value){ return value; }
         var type = this._getType(data);
@@ -529,6 +566,10 @@ Example of usage:
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
         parts[1] = (parseFloat("0."+parts[1]).toFixed(2).split("."))[1] || "00";
         return parts.join(".");
+      }
+
+      __equals(a, b) {
+        return a == b;
       }
     }
 
