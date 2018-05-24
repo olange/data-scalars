@@ -73,7 +73,6 @@ Example of usage:
       vaadin-combo-box-light {
         color: inherit;
         font-family: inherit;
-        height: 100%;
         width: 100%;
         box-sizing: border-box;
         font-weight: inherit;
@@ -105,14 +104,32 @@ Example of usage:
         background: transparent;
       }
 
+      iron-icon {
+        min-width: 20px;
+        min-height: 20px;
+      }
+
     </style>
     <div id="scalar" class$="content [[_getErrorClass(data)]]" disabled$="[[disabled]]" title="[[_title]]">
-      <span style="display: none">[[_value]]</span>
-      <template is="dom-if" if="[[!editable]]">
-        <div title="[[_computeTitle(data)]]" class$="element [[_elementType]] [[_elementVariant]]">
-          [[_formatValue(data, _value)]]
-        </div>
+
+      <!-- Icon -->
+      <template is="dom-if" if="[[_isDataOfType(data, 'icon')]]">
+        <template is="dom-if" if="[[editable]]">
+        </template>
+        <template is="dom-if" if="[[!editable]]">
+          <iron-icon icon$="[[_getIconName(_suggestionsByLabel, _value)]]"></iron-icon>
+        </template>
       </template>
+
+      <template is="dom-if" if="[[_shouldShowValue(data)]]">
+        <span style="display: none">[[_value]]</span> <!-- In order to correctly us the DOM sort (eg: vaadin grid) -->
+        <template is="dom-if" if="[[!editable]]">
+          <div title="[[_computeTitle(data)]]" class$="element [[_elementType]] [[_elementVariant]]">
+            [[_formatValue(data, _value)]]
+          </div>
+        </template>
+      </template>
+
 
       <template is="dom-if" if="[[editable]]">
         <template is="dom-if" if="[[_isDataOfTypePrimitive(data)]]">
@@ -142,7 +159,7 @@ Example of usage:
                 <div style="font-size: 10px; font-family:'Roboto'">[[item.label]]</div>
               </template>
               <iron-input>
-                <input disabled$="[[disabled]]" on-keydown="_onKeydown">
+                <input placeholder="[[placeholder]]" disabled$="[[disabled]]" on-keydown="_onKeydown">
               </iron-input>
             </vaadin-combo-box-light>
           </template>
@@ -245,10 +262,22 @@ Example of usage:
           },
 
 
-          /** Suggestions that are computed from the schema */
+          /**
+           * Suggestions that are computed from the schema
+           * eg: [{label: …, value:…}, …]
+           */
           _suggestions: {
             type: Array,
             computed: "_computeSuggestions( data)"
+          },
+
+          /**
+           * Suggestions object structured by `label`
+           * eg: {"label1": "value1", "label2": "value2", …}
+           */
+          _suggestionsByLabel: {
+            type: Object,
+            computed: "_computeSuggestionsByLabel( _suggestions)"
           },
 
           /** Internal computed value */
@@ -300,6 +329,17 @@ Example of usage:
         if(data.get("schema") && data.get("schema").get("suggestions")){
           return data.get("schema").get("suggestions").toJS()
         }
+      }
+
+      /** Computes the suggestions scrutured by 'label' */
+      _computeSuggestionsByLabel( _suggestions) {
+        var result = {};
+        if(_suggestions) {
+          _suggestions.forEach( (sug) => {
+            result[sug.label] = sug.value;
+          });
+        }
+        return result;
       }
 
       /**
@@ -440,6 +480,25 @@ Example of usage:
         } else {
           return typeToCheck == 'text';
         }
+      }
+
+      /**
+       * Should display the data value. Eg: the icon should not display its string
+       */
+      _shouldShowValue(data) {
+        var type = this._getType(data);
+        if (type != "icon") {
+          return true;
+        }
+        return false;
+      }
+
+      _getIconName(_suggestionsByLabel, _value) {
+        var icon = _value;
+        if(_suggestionsByLabel && _suggestionsByLabel[_value]) {
+          icon = _suggestionsByLabel[_value];
+        }
+        return icon;
       }
 
       _formatValue(data, value){
