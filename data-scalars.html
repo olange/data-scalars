@@ -447,7 +447,7 @@ Example of usage:
        */
       _onKeydown(e) {
         this._onChange(e); // Make sure we capture the last onchange event
-        if(e.code == 'Enter') {
+        if(e.ctrlKey && e.keyCode == 13) {
           var event = new Event('validate');
           this.dispatchEvent(event);
         } else if (e.code == "Escape") {
