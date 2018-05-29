@@ -116,13 +116,15 @@ Example of usage:
       <template is="dom-if" if="[[_isDataOfType(data, 'icon')]]">
         <template is="dom-if" if="[[editable]]">
           <input
-            class$="input element [[_elementType]] [[_elementVariant]]"
-            value="[[_value]]"
-            title="[[_title]]"
-            disabled="[[disabled]]"
-            placeholder="[[placeholder]]"
-            on-change="_onChange"
-            on-keyup="_onKeyup">
+              class$="input element [[_elementType]] [[_elementVariant]]"
+              value="[[_value]]"
+              title="[[_title]]"
+              disabled="[[disabled]]"
+              placeholder="[[placeholder]]"
+              on-change="_onChange"
+              on-keyup="_onKeyup"
+              on-keydown="_onKeydown"
+          >
         </template>
         <template is="dom-if" if="[[!editable]]">
           <template is="dom-if" if="[[__equals(_elementVariant, 'default')]]">
@@ -138,13 +140,15 @@ Example of usage:
       <template is="dom-if" if="[[_isDataOfType(data, 'flag')]]">
         <template is="dom-if" if="[[editable]]">
           <input
-            class$="input element [[_elementType]] [[_elementVariant]]"
-            value="[[_value]]"
-            title="[[_title]]"
-            disabled="[[disabled]]"
-            placeholder="[[placeholder]]"
-            on-change="_onChange"
-            on-keyup="_onKeyup">
+              class$="input element [[_elementType]] [[_elementVariant]]"
+              value="[[_value]]"
+              title="[[_title]]"
+              disabled="[[disabled]]"
+              placeholder="[[placeholder]]"
+              on-change="_onChange"
+              on-keyup="_onKeyup"
+              on-keydown="_onKeydown"
+          >
         </template>
         <template is="dom-if" if="[[!editable]]">
         </template>
@@ -163,34 +167,43 @@ Example of usage:
       <template is="dom-if" if="[[editable]]">
         <template is="dom-if" if="[[_isDataOfTypePrimitive(data)]]">
           <input
-            class$="input element [[_elementType]] [[_elementVariant]]"
-            type$="[[_getType(data)]]"
-            value="[[_value]]"
-            title="[[_title]]"
-            disabled="[[disabled]]"
-            placeholder="[[placeholder]]"
-            on-change="_onChange"
-            on-keyup="_onKeyup">
+              class$="input element [[_elementType]] [[_elementVariant]]"
+              type$="[[_getType(data)]]"
+              value="[[_value]]"
+              title="[[_title]]"
+              disabled="[[disabled]]"
+              placeholder="[[placeholder]]"
+              on-change="_onChange"
+              on-keyup="_onKeyup"
+              on-keydown="_onKeydown"
+          >
         </template>
 
         <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
           <template is="dom-if" if="[[!disabled]]">
             <!-- WIP:
-                value="[[_value]]"
-                on-value-changed="_onChange"
+              value="[[_value]]"
             -->
             <vaadin-combo-box-light
               class$="input element dropdown [[_elementType]] [[_elementVariant]]"
               placeholder="[[placeholder]]"
               items="[[_suggestions]]"
+              value="[[_value]]"
               attr-for-value="bind-value"
+              on-value-changed="_onChange"
               allow-custom-value
               disabled="[[disabled]]">
               <template>
                 <div style="font-size: 10px; font-family:'Roboto'">[[item.label]]</div>
               </template>
               <iron-input>
-                <input placeholder="[[placeholder]]" disabled$="[[disabled]]" on-change="_onChange" on-keyup="_onKeyup">
+                <input
+                    placeholder="[[placeholder]]"
+                    disabled$="[[disabled]]"
+                    on-change="_onChange"
+                    on-keyup="_onKeyup"
+                    on-keydown="_onKeydown"
+                >
               </iron-input>
             </vaadin-combo-box-light>
           </template>
@@ -321,6 +334,11 @@ Example of usage:
           _title: {
             type: String,
             computed: "_computeTitle(data, title)"
+          },
+
+          __previousOnChangeValue: {
+            type: String,
+            value: ""
           }
         };
       }
@@ -341,7 +359,7 @@ Example of usage:
         // is not editing the field.
         // NOTE: if the underlying data changed and the user is editing,
         //       the input field value should NOT be updated.
-        else if(!this.editable){ this._forceValue( value); }
+        if(!this.editable){ this._forceValue( value); }
 
         return value;
       }
@@ -438,7 +456,10 @@ Example of usage:
         */
       _onChange(e){
         var value = e.currentTarget.value;
-        this._dispatchChangeEvent( value)
+        if(this.__previousOnChangeValue != value){
+          this._dispatchChangeEvent( value)
+          this.__previousOnChangeValue = value;
+        }
       }
 
       /**
@@ -449,7 +470,12 @@ Example of usage:
        */
       _onKeyup(e) {
         this._onChange(e); // Make sure we capture the last onchange event
+      }
+
+      _onKeydown(e) {
         if(e.ctrlKey && e.keyCode == 13) {
+          e.stopPropagation();
+          e.preventDefault();
           var event = new Event('validate');
           this.dispatchEvent(event);
         } else if (e.code == "Escape") {
