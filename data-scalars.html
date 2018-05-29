@@ -122,7 +122,7 @@ Example of usage:
             disabled="[[disabled]]"
             placeholder="[[placeholder]]"
             on-change="_onChange"
-            on-keydown="_onKeydown">
+            on-keyup="_onKeyup">
         </template>
         <template is="dom-if" if="[[!editable]]">
           <template is="dom-if" if="[[__equals(_elementVariant, 'default')]]">
@@ -144,7 +144,7 @@ Example of usage:
             disabled="[[disabled]]"
             placeholder="[[placeholder]]"
             on-change="_onChange"
-            on-keydown="_onKeydown">
+            on-keyup="_onKeyup">
         </template>
         <template is="dom-if" if="[[!editable]]">
         </template>
@@ -170,25 +170,27 @@ Example of usage:
             disabled="[[disabled]]"
             placeholder="[[placeholder]]"
             on-change="_onChange"
-            on-keydown="_onKeydown">
+            on-keyup="_onKeyup">
         </template>
 
         <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
           <template is="dom-if" if="[[!disabled]]">
+            <!-- WIP:
+                value="[[_value]]"
+                on-value-changed="_onChange"
+            -->
             <vaadin-combo-box-light
               class$="input element dropdown [[_elementType]] [[_elementVariant]]"
               placeholder="[[placeholder]]"
               items="[[_suggestions]]"
-              value="[[_value]]"
               attr-for-value="bind-value"
-              on-value-changed="_onChange"
               allow-custom-value
               disabled="[[disabled]]">
               <template>
                 <div style="font-size: 10px; font-family:'Roboto'">[[item.label]]</div>
               </template>
               <iron-input>
-                <input placeholder="[[placeholder]]" disabled$="[[disabled]]" on-keydown="_onKeydown">
+                <input placeholder="[[placeholder]]" disabled$="[[disabled]]" on-change="_onChange" on-keyup="_onKeyup">
               </iron-input>
             </vaadin-combo-box-light>
           </template>
@@ -202,7 +204,7 @@ Example of usage:
               checked="[[_value]]"
               disabled="[[disabled]]"
               on-change="_onTick"
-              on-keydown="_onKeydown">
+              on-keyup="_onKeyup">
           </template>
         </template>
       </template>
@@ -445,7 +447,7 @@ Example of usage:
        *     - Escape key will dispatch the 'cancel' event
        *     - Enter key will dispatch the 'validate' event
        */
-      _onKeydown(e) {
+      _onKeyup(e) {
         this._onChange(e); // Make sure we capture the last onchange event
         if(e.ctrlKey && e.keyCode == 13) {
           var event = new Event('validate');
