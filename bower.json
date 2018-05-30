@@ -8,7 +8,8 @@
     "vaadin-combo-box": "vaadin/vaadin-combo-box#v4.0.0-beta6",
     "immutable": "facebook/immutable-js#v4.0.0-rc.4",
     "iron-input": "PolymerElements/iron-input",
-    "iron-icon": "polymerelements/iron-icon#^2.1.0"
+    "iron-icon": "polymerelements/iron-icon#^2.1.0",
+    "flag-cc": "https://github.com/yveslange/flag-cc#^0.0.8"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",

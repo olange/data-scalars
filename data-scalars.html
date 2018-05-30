@@ -2,6 +2,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="../vaadin-combo-box/vaadin-combo-box-light.html">
+<link rel="import" href="../flag-cc/flag-cc.html">
 
 <!--
 Automatic representation of a scalar value as Polymer Elements (Iron and Paper) – in either read-only or editable mode.
@@ -109,6 +110,19 @@ Example of usage:
         min-height: 20px;
       }
 
+      .flag-cc-wrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1px;
+      }
+      flag-cc {
+        width: 100%;
+        height: 100%;
+      }
+
     </style>
     <div id="scalar" class$="content [[_getErrorClass(data)]]" disabled$="[[disabled]]" title="[[_title]]">
 
@@ -131,26 +145,10 @@ Example of usage:
             <iron-icon icon$="[[_getIconName(_suggestionsByLabel, _value)]]"></iron-icon>
           </template>
           <template is="dom-if" if="[[__equals(_elementVariant, 'flag')]]">
-            TODO FLAG [[_getFlagName(_suggestionsByLabel, _value)]]
+            <div class="flag-cc-wrapper">
+              <flag-cc currency="[[_value]]"></flag-cc>
+            </div>
           </template>
-        </template>
-      </template>
-
-      <!-- Flag -->
-      <template is="dom-if" if="[[_isDataOfType(data, 'flag')]]">
-        <template is="dom-if" if="[[editable]]">
-          <input
-              class$="input element [[_elementType]] [[_elementVariant]]"
-              value="[[_value]]"
-              title="[[_title]]"
-              disabled="[[disabled]]"
-              placeholder="[[placeholder]]"
-              on-change="_onChange"
-              on-keyup="_onKeyup"
-              on-keydown="_onKeydown"
-          >
-        </template>
-        <template is="dom-if" if="[[!editable]]">
         </template>
       </template>
 
@@ -598,6 +596,11 @@ Example of usage:
 
       __equals(a, b) {
         return a == b;
+      }
+
+      empty(){
+        this.data = this.data.set("value", "");
+        this._forceValue("");
       }
     }
 
