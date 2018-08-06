@@ -26,7 +26,9 @@ Example of usage:
         max-height: 32px;
       }
       [part="content"] {
-        margin-left: -20px;
+      }
+      :host::before {
+        display: none !important; /* Remove the blue-checkmark */
       }
     </style>
   </template>
@@ -208,7 +210,7 @@ Example of usage:
               allow-custom-value
               disabled="[[disabled]]">
               <template>
-                <div style="font-size: 10px; font-family:'Roboto';">[[item.label]] ([[_value]])</div>
+                <div style="font-size: 10px; font-family:'Roboto';">[[item.label]] ([[item.value]])</div>
               </template>
               <iron-input>
                 <input
