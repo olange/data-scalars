@@ -17,6 +17,20 @@ Example of usage:
     <data-scalars data="{{dataEgg}}" editable="true|false"></data-scalars>
   </data-point>
 -->
+<dom-module id="custom-vaadin-combo-box-item" theme-for="vaadin-combo-box-item">
+  <template>
+    <style>
+      :host {
+        padding: 0;
+        margin: 0;
+        max-height: 32px;
+      }
+      [part="content"] {
+        margin-left: -20px;
+      }
+    </style>
+  </template>
+</dom-module>
 <dom-module id="data-scalars">
   <template>
     <style>
@@ -77,6 +91,10 @@ Example of usage:
         width: 100%;
         box-sizing: border-box;
         font-weight: inherit;
+      }
+
+      vaadin-combo-box-ligh {
+        min-width: 500px !important;
       }
 
       /** Turn off input[type=number] arrows/spiner */
@@ -152,11 +170,12 @@ Example of usage:
         </template>
       </template>
 
+      <!-- Text value -->
       <template is="dom-if" if="[[_shouldShowValue(data)]]">
         <span style="display: none">[[_value]]</span> <!-- In order to correctly us the DOM sort (eg: vaadin grid) -->
         <template is="dom-if" if="[[!editable]]">
           <div title="[[_computeTitle(data)]]" class$="element [[_elementType]] [[_elementVariant]]">
-            [[_formatValue(data, _value)]]
+            [[_formatValue(data, _value, _suggestions)]]
           </div>
         </template>
       </template>
@@ -179,20 +198,17 @@ Example of usage:
 
         <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
           <template is="dom-if" if="[[!disabled]]">
-            <!-- WIP:
-              value="[[_value]]"
-            -->
             <vaadin-combo-box-light
               class$="input element dropdown [[_elementType]] [[_elementVariant]]"
               placeholder="[[placeholder]]"
               items="[[_suggestions]]"
-              value="[[_value]]"
+              value="[[_getLabelFromValue(_suggestions, _value)]]"
               attr-for-value="bind-value"
               on-value-changed="_onChange"
               allow-custom-value
               disabled="[[disabled]]">
               <template>
-                <div style="font-size: 10px; font-family:'Roboto'">[[item.label]]</div>
+                <div style="font-size: 10px; font-family:'Roboto';">[[item.label]] ([[_value]])</div>
               </template>
               <iron-input>
                 <input
@@ -573,8 +589,9 @@ Example of usage:
         return flag;
       }
 
-      _formatValue(data, value){
-        if(!value){ return value; }
+      _formatValue(data, _value, _suggestions){
+        if(!_value){ return _value; }
+        var value = this._getLabelFromValue(_suggestions, _value);
         var type = this._getType(data);
         var variant = this._getVariant(data);
         if( type == 'number' && variant == 'financial') {
@@ -592,7 +609,7 @@ Example of usage:
             string += " "+hours+":"+minutes;
           }
           return string;
-        }
+        } else
         return value;
       }
 
@@ -610,6 +627,20 @@ Example of usage:
       empty(){
         this.data = this.data.set("value", "");
         this._forceValue("");
+      }
+
+      /**
+       * Retrieves the suggestion label from the value if exists.
+       * Else it returns the value
+       */
+      _getLabelFromValue(_suggestions, _value) {
+        var label = _value;
+        if(_suggestions){
+          _suggestions.forEach( (s) => {
+            if(s.value == _value) { label = s.label; }
+          });
+        }
+        return label;
       }
     }
 
