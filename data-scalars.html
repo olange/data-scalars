@@ -209,13 +209,17 @@ Example of usage:
 
         <template is="dom-if" if="[[_isDataOfType(data, 'checkbox')]]">
           <template is="dom-if" if="[[!disabled]]">
-            <input
-              class$="input element checkbox [[_elementType]] [[_elementVariant]]"
-              type="checkbox"
-              checked="[[_value]]"
-              disabled="[[disabled]]"
-              on-change="_onTick"
-              on-keyup="_onKeyup">
+            <select
+                class$="input element checkbox [[_elementType]] [[_elementVariant]]"
+                disabled="[[disabled]]"
+                on-change="_onTick"
+                value="[[_value]]"
+                on-keyup="_onKeyup"
+            >
+              <option>undefined</option>
+              <option value=true>true</option>
+              <option value=false>false</option>
+            </select>
           </template>
         </template>
       </template>
@@ -484,7 +488,12 @@ Example of usage:
 
       /** Dispatch a custom event 'change' when the checkbox attribut has changed */
       _onTick(e){
-        var checked = e.currentTarget.checked;
+        var elem = e.currentTarget;
+        var value = elem.options[elem.selectedIndex].value;
+        var checked = undefined;
+        if(value == "true"){checked = true;}
+        else if(value == "false"){checked = false;}
+        console.log(value, checked)
         this._dispatchChangeEvent( checked);
       }
 
