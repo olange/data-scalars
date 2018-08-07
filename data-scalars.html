@@ -239,6 +239,9 @@ Example of usage:
               <option value=false>false</option>
             </select>
           </template>
+          <template is="dom-if" if="[[disabled]]">
+            [[_value]]
+          </template>
         </template>
       </template>
     </div>
@@ -611,8 +614,9 @@ Example of usage:
             string += " "+hours+":"+minutes;
           }
           return string;
-        } else
+        }
         return value;
+
       }
 
       _financialNumber(x) {
