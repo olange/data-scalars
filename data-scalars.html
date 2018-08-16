@@ -176,19 +176,21 @@ Example of usage:
       <template is="dom-if" if="[[_shouldShowValue(data)]]">
         <span style="display: none">[[_value]]</span> <!-- In order to correctly us the DOM sort (eg: vaadin grid) -->
         <template is="dom-if" if="[[!editable]]">
-          <div title="[[_computeTitle(data)]]" class$="element [[_elementType]] [[_elementVariant]]">
+          <div style="[[_getTextStyle(data, _value)]]" title="[[_computeTitle(data)]]" class$="element [[_elementType]] [[_elementVariant]]">
             [[_formatValue(data, _value, _suggestions)]]
           </div>
         </template>
       </template>
 
-
+      <!-- EDITABLE MODE -->
       <template is="dom-if" if="[[editable]]">
+
+        <!-- Editable primitive value -->
         <template is="dom-if" if="[[_isDataOfTypePrimitive(data)]]">
           <input
               class$="input element [[_elementType]] [[_elementVariant]]"
               type$="[[_getType(data)]]"
-              value="[[_value]]"
+              value$="[[_value]]"
               title="[[_title]]"
               disabled="[[disabled]]"
               placeholder="[[placeholder]]"
@@ -198,6 +200,22 @@ Example of usage:
           >
         </template>
 
+        <!-- Editable timestamp -->
+        <template is="dom-if" if="[[_isDataOfType(data, 'timestamp')]]">
+          <input
+              class$="input element [[_elementType]] [[_elementVariant]]"
+              type="datetime-local"
+              value="[[_formatHTMLDatetime(data, _value)]]"
+              title="[[_title]]"
+              disabled="[[disabled]]"
+              placeholder="[[placeholder]]"
+              on-change="_onChange"
+              on-keyup="_onKeyup"
+              on-keydown="_onKeydown"
+          >
+        </template>
+
+        <!-- Editable dropdown -->
         <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
           <template is="dom-if" if="[[!disabled]]">
             <vaadin-combo-box-light
@@ -225,6 +243,7 @@ Example of usage:
           </template>
         </template>
 
+        <!-- Editable checkbox -->
         <template is="dom-if" if="[[_isDataOfType(data, 'checkbox')]]">
           <template is="dom-if" if="[[!disabled]]">
             <select
@@ -479,6 +498,9 @@ Example of usage:
         */
       _onChange(e){
         var value = e.currentTarget.value;
+        if(e.currentTarget.type == "datetime-local"){
+          value = value.replace("T", " ");
+        }
         if(this.__previousOnChangeValue != value){
           this._dispatchChangeEvent( value)
           this.__previousOnChangeValue = value;
@@ -601,8 +623,7 @@ Example of usage:
         var variant = this._getVariant(data);
         if( type == 'number' && variant == 'financial') {
           return this._financialNumber(value);
-
-        } else if( ['date', 'datetime-local'].indexOf(type) > -1) {
+        } else if( ['date', 'datetime-local', 'timestamp'].indexOf(type) > -1) {
           var date = new Date(value);
           var day = (date.getDate()+"").length > 1 ? date.getDate() : '0'+date.getDate();
           var month = ((date.getMonth()+1)+"").length > 1 ? (date.getMonth()) : '0'+(date.getMonth()+1);
@@ -610,13 +631,16 @@ Example of usage:
           var hours = (date.getHours()+"").length > 1 ? (date.getHours()) : '0'+date.getHours();
           var minutes = (date.getMinutes()+"").length > 1 ? (date.getMinutes()) : '0'+date.getMinutes();
           var string = year+"-"+month+"-"+day;
-          if( type == 'datetime-local') {
+          if( type != 'date') {
             string += " "+hours+":"+minutes;
           }
           return string;
         }
         return value;
+      }
 
+      _formatHTMLDatetime(data, _value){
+        return this._formatValue(data, _value).replace(" ", "T")
       }
 
       _financialNumber(x) {
@@ -648,9 +672,21 @@ Example of usage:
         }
         return label;
       }
+
+      _getTextStyle(data, _value){
+        if(!_value){ return _value; }
+        var type = this._getType(data);
+        var variant = this._getVariant(data);
+        if(type == "number" && variant == "fiancial"){
+          
+          if(_value > 0){
+            return "color: yellowgreen;"
+          } else if( _value < 0) {
+            return "color: indianred;"
+          }
+        }
+      }
     }
-
-
     window.customElements.define(DataScalars.is, DataScalars);
   </script>
 </dom-module>
