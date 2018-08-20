@@ -187,32 +187,42 @@ Example of usage:
 
         <!-- Editable primitive value -->
         <template is="dom-if" if="[[_isDataOfTypePrimitive(data)]]">
-          <input
-              class$="input element [[_elementType]] [[_elementVariant]]"
-              type$="[[_getType(data)]]"
-              value$="[[_value]]"
-              title="[[_title]]"
-              disabled="[[disabled]]"
-              placeholder="[[placeholder]]"
-              on-change="_onChange"
-              on-keyup="_onKeyup"
-              on-keydown="_onKeydown"
-          >
+          <template is="dom-if" if="[[!disabled]]">
+            <input
+                class$="input element [[_elementType]] [[_elementVariant]]"
+                type$="[[_getType(data)]]"
+                value$="[[_value]]"
+                title="[[_title]]"
+                disabled="[[disabled]]"
+                placeholder="[[placeholder]]"
+                on-change="_onChange"
+                on-keyup="_onKeyup"
+                on-keydown="_onKeydown"
+            >
+          </template>
+          <template is="dom-if" if="[[disabled]]">
+            [[_formatValue(data, _value, _suggestions)]]
+          </template>
         </template>
 
-        <!-- Editable timestamp -->
-        <template is="dom-if" if="[[_isDataOfType(data, 'timestamp')]]">
-          <input
-              class$="input element [[_elementType]] [[_elementVariant]]"
-              type="datetime-local"
-              value="[[_formatHTMLDatetime(data, _value)]]"
-              title="[[_title]]"
-              disabled="[[disabled]]"
-              placeholder="[[placeholder]]"
-              on-change="_onChange"
-              on-keyup="_onKeyup"
-              on-keydown="_onKeydown"
-          >
+        <!-- Editable date and timestamp value -->
+        <template is="dom-if" if="[[_isDataOfTypeDate(data)]]">
+          <template is="dom-if" if="[[!disabled]]">
+            <input
+                class$="input element [[_elementType]] [[_elementVariant]]"
+                type$="[[_parseHTMLDateType(data)]]"
+                value$="[[_formatHTMLDatetime(data, _value)]]"
+                title="[[_title]]"
+                disabled="[[disabled]]"
+                placeholder="[[placeholder]]"
+                on-change="_onChange"
+                on-keyup="_onKeyup"
+                on-keydown="_onKeydown"
+            >
+          </template>
+          <template is="dom-if" if="[[disabled]]">
+            [[_formatValue(data, _value, _suggestions)]]
+          </template>
         </template>
 
         <!-- Editable dropdown -->
@@ -536,7 +546,6 @@ Example of usage:
         var checked = undefined;
         if(value == "true"){checked = true;}
         else if(value == "false"){checked = false;}
-        console.log(value, checked)
         this._dispatchChangeEvent( checked);
       }
 
@@ -549,6 +558,18 @@ Example of usage:
         }
       }
 
+      /** Return the parsed HTML date type */
+      _parseHTMLDateType(data) {
+        var type = this._getType(data);
+        if(type == 'date'){
+          return 'date';
+        } else if( ['datetime', 'datetime-local', 'timestamp'].indexOf(type) > -1){
+          return 'datetime-local';
+        }
+        return 'text';
+      }
+
+      /** Returns the schema type variant */
       _getVariant(data) {
         if(data && data.get("schema") && data.get("schema").get("variant")){
           return  data.get("schema").get("variant").toLowerCase();
@@ -563,13 +584,20 @@ Example of usage:
         * to present the data value.
         */
       _isDataOfTypePrimitive(data){
-        var primitiveTypes = ['text', 'date', 'datetime-local', 'number'];
+        var primitiveTypes = ['text', 'number'];
         var type = this._getType(data);
         if(type) {
           return primitiveTypes.indexOf( type) > -1;
         } else {
           return true;
         }
+      }
+
+      /** Returns true if the data type is a `date` type */
+      _isDataOfTypeDate(data) {
+        var dateTypes = ['date', 'datetime', 'datetime-local', 'timestamp'];
+        var type = this._getType(data);
+        return dateTypes.indexOf(type) > -1;
       }
 
       /**
@@ -630,7 +658,7 @@ Example of usage:
           var year = date.getFullYear();
           var hours = (date.getHours()+"").length > 1 ? (date.getHours()) : '0'+date.getHours();
           var minutes = (date.getMinutes()+"").length > 1 ? (date.getMinutes()) : '0'+date.getMinutes();
-          var string = year+"-"+month+"-"+day;
+          var string = day+"."+month+"."+year;
           if( type != 'date') {
             string += " "+hours+":"+minutes;
           }
@@ -640,7 +668,19 @@ Example of usage:
       }
 
       _formatHTMLDatetime(data, _value){
-        return this._formatValue(data, _value).replace(" ", "T")
+        var type = this._getType(data);
+        var date = new Date(_value);
+        var day = (date.getDate()+"").length > 1 ? date.getDate() : '0'+date.getDate();
+        var month = ((date.getMonth()+1)+"").length > 1 ? (date.getMonth()) : '0'+(date.getMonth()+1);
+        var year = date.getFullYear();
+        var hours = (date.getHours()+"").length > 1 ? (date.getHours()) : '0'+date.getHours();
+        var minutes = (date.getMinutes()+"").length > 1 ? (date.getMinutes()) : '0'+date.getMinutes();
+        var string = year+"-"+month+"-"+day;
+        if( type != 'date') {
+          string += " "+hours+":"+minutes;
+        }
+        string = string.replace(' ', 'T');
+        return string;
       }
 
       _financialNumber(x) {
