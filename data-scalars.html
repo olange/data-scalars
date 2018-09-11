@@ -552,9 +552,18 @@ Example of usage:
       /** Retrieves the type from the schema */
       _getType(data){
         if(data && data.get("schema") && data.get("schema").get("type")){
-          return  data.get("schema").get("type").toLowerCase();
+          return data.get("schema").get("type").toLowerCase();
         } else {
           return 'text';
+        }
+      }
+
+      /** Retrieves the style from the schema */
+      _getStyle(data){
+        if(data && data.get("schema") && data.get("schema").get("style")){
+          return data.get("schema").get("style");
+        } else {
+          return '';
         }
       }
 
@@ -714,16 +723,18 @@ Example of usage:
       }
 
       _getTextStyle(data, _value){
-        if(!_value){ return _value; }
+        if(_value == undefined){ return ""; }
         var type = this._getType(data);
         var variant = this._getVariant(data);
+        var style = this._getStyle(data);
         if(type == "number" && variant == "financial"){
           if(_value > 0){
-            return "color: yellowgreen;"
+            return "color: yellowgreen;"+style;
           } else if( _value < 0) {
-            return "color: indianred;"
+            return "color: indianred;"+style;
           }
         }
+        return style;
       }
     }
     window.customElements.define(DataScalars.is, DataScalars);
