@@ -244,7 +244,6 @@ Example of usage:
                 <input
                     placeholder="[[placeholder]]"
                     disabled$="[[disabled]]"
-                    on-change="_onChange"
                     on-keyup="_onKeyup"
                     on-keydown="_onKeydown"
                 >
@@ -517,16 +516,16 @@ Example of usage:
         }
       }
 
+      _onKeyup(e) {
+        this._onChange(e); // Make sure we capture the last onchange event
+      }
+
       /**
        * Dispatch an event when some special keys are used.
        * Eg:
        *     - Escape key will dispatch the 'cancel' event
        *     - Enter key will dispatch the 'validate' event
        */
-      _onKeyup(e) {
-        this._onChange(e); // Make sure we capture the last onchange event
-      }
-
       _onKeydown(e) {
         if(e.ctrlKey && e.keyCode == 13) {
           e.stopPropagation();
