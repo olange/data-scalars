@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.3.12"></a>
+## [1.3.12](https://github.com/olange/data-scalars/compare/v1.3.11...v1.3.12) (2018-09-25)
+
+
+
 <a name="1.3.11"></a>
 ## [1.3.11](https://github.com/olange/data-scalars/compare/v1.3.10...v1.3.11) (2018-09-25)
 
