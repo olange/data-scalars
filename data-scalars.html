@@ -678,6 +678,7 @@ Example of usage:
       }
 
       _formatHTMLDatetime(data, _value){
+        if(_value == undefined){ return _value; }
         var type = this._getType(data);
         var date = new Date(_value);
         var day = (date.getDate()+"").length > 1 ? date.getDate() : '0'+date.getDate();
