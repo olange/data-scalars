@@ -487,6 +487,11 @@ Example of usage:
           }
         }
         this._value = value;
+
+        // Make sure to detect futher changes. Reseting previous change.
+        // TODO: this should be in an observer when the `editing` attribute
+        // changes.
+        this.__previousOnChangeValue = undefined;
       }
 
       /** If there is an error, the `error` class is returned to the input field */
@@ -513,6 +518,10 @@ Example of usage:
         if(e.currentTarget.type == "datetime-local"){
           value = value.replace("T", " ");
         }
+
+        // We need to make sure that the onChange was triggered twice.
+        // After the edition is finished, the event is resent to notify
+        // about the full changing string.
         if(this.__previousOnChangeValue != value){
           this._dispatchChangeEvent( value)
           this.__previousOnChangeValue = value;
