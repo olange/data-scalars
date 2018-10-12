@@ -5,7 +5,7 @@
 <link rel="import" href="../flag-cc/flag-cc.html">
 
 <!--
-Automatic representation of a scalar value as Polymer Elements (Iron and Paper) – in either read-only or editing mode.
+Automatic representation of a scalar value as Polymer Elements (Iron and Paper) – in either read-only or editable mode.
 
 ‹data-scalars› elements consume an immutable data egg data structure and produce suitable Polymer elements to represent that value. The data egg is a simple structure, which contains the scalar value, its type and logical formatting hints.
 
@@ -14,7 +14,7 @@ Designed to work hand-in-hand with data nuggets data structures delivered by ‹
 Example of usage:
 
   <data-point selector="coord" data="{{dataNugget}}" item="{{dataEgg}}">
-    <data-scalars data="{{dataEgg}}" editing="true|false"></data-scalars>
+    <data-scalars data="{{dataEgg}}" editable="true|false"></data-scalars>
   </data-point>
 -->
 <dom-module id="custom-vaadin-combo-box-item" theme-for="vaadin-combo-box-item">
@@ -41,7 +41,7 @@ Example of usage:
         @apply --layout-flex;
         @apply --layout-horizontal;
       }
-      :host([editing]) div.content {
+      :host([editable]) div.content {
         background-color: rgba(255, 255, 255, 0.1);
         border: 1px dotted gray;
       }
@@ -61,7 +61,7 @@ Example of usage:
         border: 1px solid rgb(255, 41, 41);
         background-color: rgb(248, 183, 183);
       }
-      :host([editing]) div.content.error{
+      :host([editable]) div.content.error{
         border-style: dotted;
       }
 
@@ -148,7 +148,7 @@ Example of usage:
 
       <!-- Icon -->
       <template is="dom-if" if="[[_isDataOfType(data, 'icon')]]">
-        <template is="dom-if" if="[[editing]]">
+        <template is="dom-if" if="[[editable]]">
           <input
               class$="input element [[_elementType]] [[_elementVariant]]"
               value="[[_value]]"
@@ -160,7 +160,7 @@ Example of usage:
               on-keydown="_onKeydown"
           >
         </template>
-        <template is="dom-if" if="[[!editing]]">
+        <template is="dom-if" if="[[!editable]]">
           <template is="dom-if" if="[[__equals(_elementVariant, 'default')]]">
             <iron-icon icon$="[[_getIconName(_suggestionsByLabel, _value)]]"></iron-icon>
           </template>
@@ -175,17 +175,17 @@ Example of usage:
       <!-- Text value -->
       <template is="dom-if" if="[[_shouldShowValue(data)]]">
         <span style="display: none">[[_value]]</span> <!-- In order to correctly us the DOM sort (eg: vaadin grid) -->
-        <template is="dom-if" if="[[!editing]]">
+        <template is="dom-if" if="[[!editable]]">
           <div style="[[_getTextStyle(data, _value)]]" title="[[_computeTitle(data)]]" class$="element [[_elementType]] [[_elementVariant]]">
             [[_formatValue(data, _value, _suggestions)]]
           </div>
         </template>
       </template>
 
-      <!-- EDITING MODE -->
-      <template is="dom-if" if="[[editing]]">
+      <!-- EDITABLE MODE -->
+      <template is="dom-if" if="[[editable]]">
 
-        <!-- Editing primitive value -->
+        <!-- Editable primitive value -->
         <template is="dom-if" if="[[_isDataOfTypePrimitive(data)]]">
           <template is="dom-if" if="[[!disabled]]">
             <input
@@ -205,7 +205,7 @@ Example of usage:
           </template>
         </template>
 
-        <!-- Editing date and timestamp value -->
+        <!-- Editable date and timestamp value -->
         <template is="dom-if" if="[[_isDataOfTypeDate(data)]]">
           <template is="dom-if" if="[[!disabled]]">
             <input
@@ -225,7 +225,7 @@ Example of usage:
           </template>
         </template>
 
-        <!-- Editing dropdown -->
+        <!-- Editable dropdown -->
         <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
           <template is="dom-if" if="[[!disabled]]">
             <vaadin-combo-box-light
@@ -252,7 +252,7 @@ Example of usage:
           </template>
         </template>
 
-        <!-- Editing checkbox -->
+        <!-- Editable checkbox -->
         <template is="dom-if" if="[[_isDataOfType(data, 'checkbox')]]">
           <template is="dom-if" if="[[!disabled]]">
             <select
@@ -297,7 +297,7 @@ Example of usage:
            *    dataEgg = {value: …, schema: …, format: … [, metadata: …]}
            *
            *    schema = {
-           *      editing: true|false,
+           *      editable: true|false,
            *      type: text|number|date|boolean|dropdown,
            *      variant: ...,
            *      hidden: true|false,
@@ -319,18 +319,15 @@ Example of usage:
             type: String,
           },
 
-          /** Defines if the data-scalar is in editing mode or not */
-          editing: {
+          /** Is this scalar editable or not ? (WIP) */
+          editable: {
             type: Boolean,
             notify: true,
             value: false,
             reflectToAttribute: true
           },
 
-          /**
-           * The input field will be disabled when the editing mode is
-           * activated
-           */
+          /** Is this scalar input disabled ? */
           disabled: {
             type: Boolean,
             notify: true,
@@ -413,7 +410,7 @@ Example of usage:
         // is not editing the field.
         // NOTE: if the underlying data changed and the user is editing,
         //       the input field value should NOT be updated.
-        if(!this.editing){ this._forceValue( value); }
+        if(!this.editable){ this._forceValue( value); }
 
         return value;
       }
@@ -518,10 +515,6 @@ Example of usage:
         if(e.currentTarget.type == "datetime-local"){
           value = value.replace("T", " ");
         }
-
-        // We need to make sure that the onChange was triggered twice.
-        // After the edition is finished, the event is resent to notify
-        // about the full changing string.
         if(this.__previousOnChangeValue != value){
           this._dispatchChangeEvent( value)
           this.__previousOnChangeValue = value;
@@ -673,9 +666,10 @@ Example of usage:
         } else if( type == 'number' && variant == 'percentage') {
           return this._percentageNumber(value);
         } else if( ['date', 'datetime-local', 'timestamp'].indexOf(type) > -1 && _value) {
+          var month = (date.getMonth()+1)+"";
+          month = month.length > 1 ? month : '0'+month;
           var date = new Date(value);
           var day = (date.getDate()+"").length > 1 ? date.getDate() : '0'+date.getDate();
-          var month = ((date.getMonth()+1)+"").length > 1 ? (date.getMonth()+1) : '0'+(date.getMonth()+1);
           var year = date.getFullYear();
           var hours = (date.getHours()+"").length > 1 ? (date.getHours()) : '0'+date.getHours();
           var minutes = (date.getMinutes()+"").length > 1 ? (date.getMinutes()) : '0'+date.getMinutes();
@@ -690,10 +684,11 @@ Example of usage:
 
       _formatHTMLDatetime(data, _value){
         if(_value){
+          var month = (date.getMonth()+1)+"";
+          month = month.length > 1 ? month : '0'+month;
           var type = this._getType(data);
           var date = new Date(_value);
           var day = (date.getDate()+"").length > 1 ? date.getDate() : '0'+date.getDate();
-          var month = ((date.getMonth()+1)+"").length > 1 ? (date.getMonth()+1) : '0'+(date.getMonth()+1);
           var year = date.getFullYear();
           var hours = (date.getHours()+"").length > 1 ? (date.getHours()) : '0'+date.getHours();
           var minutes = (date.getMinutes()+"").length > 1 ? (date.getMinutes()) : '0'+date.getMinutes();
