@@ -484,6 +484,11 @@ Example of usage:
           }
         }
         this._value = value;
+
+        // Make sure to detect futher changes. Reseting previous change.
+        // TODO: this should be in an observer when the `editing` attribute
+        // changes.
+        this.__previousOnChangeValue = undefined;
       }
 
       /** If there is an error, the `error` class is returned to the input field */
