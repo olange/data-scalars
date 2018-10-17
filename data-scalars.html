@@ -59,8 +59,9 @@ Example of usage:
 
       div.content.error {
         border: 1px solid rgb(255, 41, 41);
-        background-color: rgb(248, 183, 183);
+        background-color: rgba(248, 183, 183, 0.5);
       }
+
       :host([editing]) div.content.error{
         border-style: dotted;
       }
@@ -151,7 +152,7 @@ Example of usage:
         <template is="dom-if" if="[[editing]]">
           <input
               class$="input element [[_elementType]] [[_elementVariant]]"
-              value="[[_value]]"
+              value$="[[_value]]"
               title="[[_title]]"
               disabled="[[disabled]]"
               placeholder="[[placeholder]]"
@@ -234,9 +235,10 @@ Example of usage:
               items="[[_suggestions]]"
               value="[[_getLabelFromValue(_suggestions, _value)]]"
               attr-for-value="bind-value"
-              on-value-changed="_onChange"
+              disabled="[[disabled]]"
               allow-custom-value
-              disabled="[[disabled]]">
+              selected-item="{{_dropdownSelectedItem}}"
+              >
               <template>
                 <div style="font-size: 10px; font-family:'Roboto';">[[item.label]] ([[item.value]])</div>
               </template>
@@ -393,6 +395,11 @@ Example of usage:
           __previousOnChangeValue: {
             type: String,
             value: ""
+          },
+
+          _dropdownSelectedItem: {
+            type: Object,
+            observer: "_dropdownSelectedItemChanged"
           }
         };
       }
@@ -409,11 +416,7 @@ Example of usage:
         // Translate undefined to empty string
         if(value == undefined) { value = ""; }
 
-        // Make sure to refresh the input field when the current user
-        // is not editing the field.
-        // NOTE: if the underlying data changed and the user is editing,
-        //       the input field value should NOT be updated.
-        if(!this.editing){ this._forceValue( value); }
+        this._forceValue(value);
 
         return value;
       }
@@ -479,6 +482,7 @@ Example of usage:
 
       /* Make sure that the user edition is deleted and replaced by the default value */
       _forceValue(value){
+        var type = this._getType(this.data)
         var scalar = this.$.scalar;
         if(scalar) {
           var input = scalar.querySelector(".input");
@@ -491,7 +495,12 @@ Example of usage:
         // Make sure to detect futher changes. Reseting previous change.
         // TODO: this should be in an observer when the `editing` attribute
         // changes.
-        this.__previousOnChangeValue = undefined;
+        if(type == "dropdown"){
+          // this is because the default vaadin value is an empty string instead of undefined.
+          // Thus, going to the 'edit' mode will trigger a change from undefined to empty string.
+          // We do not want to trigger the initial on-change event.
+          this.__previousOnChangeValue = "";
+        } else { this.__previousOnChangeValue = undefined; }
       }
 
       /** If there is an error, the `error` class is returned to the input field */
@@ -525,6 +534,13 @@ Example of usage:
         if(this.__previousOnChangeValue != value){
           this._dispatchChangeEvent( value)
           this.__previousOnChangeValue = value;
+        }
+      }
+
+      _dropdownSelectedItemChanged(_dropdownSelectedItem) {
+        if(_dropdownSelectedItem) {
+          var e = { currentTarget: { value: _dropdownSelectedItem.label}};
+          this._onChange(e);
         }
       }
 
