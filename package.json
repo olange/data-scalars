@@ -1,6 +1,6 @@
 {
   "name": "data-scalars",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Automatic representation of a _scalar_ value as [Polymer Elements](https://elements.polymer-project.org) (Iron and Paper) - in either read-only or editable mode.",
   "main": "index.js",
   "directories": {
