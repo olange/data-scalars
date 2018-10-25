@@ -30,16 +30,22 @@
                 #container {
                   display: block;
                 }
+                data-scalars {
+                  height: 18px;
+                }
               </style>
               <div id="container">
-                <data-scalars id="ds" editable="true" name="a dropdown"></data-scalars>
-                <data-scalars id="ds2" name="an error"></data-scalars>
-                <data-scalars id="ds3" editable="true" name="an editable"></data-scalars>
-                <data-scalars id="ds4" editable="true" name="an editable checkbox"></data-scalars>
+                <data-scalars id="ds1" name="a dropdown"></data-scalars>
+                <data-scalars id="ds2" name="an error" disabled="true"></data-scalars>
+                <data-scalars id="ds3" name="an editable"></data-scalars>
+                <data-scalars id="ds4" name="an editable checkbox"></data-scalars>
+                <data-scalars id="ds5" name="A financial number"></data-scalars>
+                <button id="buttonEditable">Toggle editable</button>
+                <button id="buttonSubmit">Submit</button>
               </div>
               <script>
-                var ds = document.querySelector("#ds");
-                ds.data = Immutable.fromJS({
+
+                ds1.data = Immutable.fromJS({
                   value: "This is a dropdown field",
                   schema: {
                     type: "dropdown",
@@ -49,17 +55,41 @@
                   }
                 });
                 ds2.data = Immutable.fromJS({
-                  value: "this is a field with an error",
+                  value: "A field with an error",
                   schema: {type: "text"},
                   error: "There is an mistake"
                 });
                 ds3.data = Immutable.fromJS({
-                  value: "this is an editable date",
+                  value: "2018-10-25T00:00",
                   schema: {type: "date"}
                 });
                 ds4.data = Immutable.fromJS({
                   value: "true",
                   schema: {type: "checkbox"}
+                });
+                ds5.data = Immutable.fromJS({
+                  value: 1000,
+                  schema: {type: "number", variant: "financial"}
+                })
+
+                var elems = [ds1, ds2, ds3, ds4, ds5];
+                buttonEditable.addEventListener('click', () => {
+                  elems.forEach( (el) => {el.editing = !el.editing});
+                });
+                buttonSubmit.addEventListener('click', (e) => {
+                  elems.forEach( (el, i) => {
+                    var name = el.name;
+                    var value = el.getValue();
+                    var newValue = el.newValue;
+                    if(newValue != undefined) {
+                      console.log("Value of", el.name, ":", value, "->", newValue);
+                      el.data = el.data.set("value", newValue);
+                    }
+                  });
+                  buttonEditable.click();
+                });
+                elems.forEach( (el) => {
+                  
                 });
               </script>
             </template>
