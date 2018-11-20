@@ -65,11 +65,16 @@
                 });
                 ds4.data = Immutable.fromJS({
                   value: "true",
-                  schema: {type: "checkbox"}
+                  schema: {type: "checkbox", style: (d) => {
+                    var data = d.toJS();
+                    if(data.value == "true"){
+                      return "color: yellowgreen";
+                    }
+                  }}
                 });
                 ds5.data = Immutable.fromJS({
                   value: 1000,
-                  schema: {type: "number", variant: "financial"}
+                  schema: {type: "number", variant: "financial-locale"}
                 })
 
                 var elems = [ds1, ds2, ds3, ds4, ds5];
@@ -87,9 +92,6 @@
                     }
                   });
                   buttonEditable.click();
-                });
-                elems.forEach( (el) => {
-                  
                 });
               </script>
             </template>

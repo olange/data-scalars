@@ -26,6 +26,8 @@ Example of usage:
         max-height: 32px;
       }
       [part="content"] {
+        padding: 0;
+        margin: 0;
       }
       :host::before {
         display: none !important; /* Remove the blue-checkmark */
@@ -33,6 +35,7 @@ Example of usage:
     </style>
   </template>
 </dom-module>
+
 <dom-module id="data-scalars">
   <template>
     <style>
@@ -40,64 +43,71 @@ Example of usage:
         display: block;
         @apply --layout-flex;
         @apply --layout-horizontal;
+        padding: 0px;
       }
-      :host([editing]) div.content {
+
+      div.content {
+        border: 1px dotted transparent;
+        font-size: 12px;
+        color: inherit;
+        width: 100%;
+        display: flex;
+        position: relative;
+        box-sizing: border-box;
+        align-items: center;
+      }
+     
+      div.content[editing] {
         background-color: rgba(255, 255, 255, 0.1);
         border: 1px dotted gray;
       }
 
-      div.content {
-        font-size: 12px;
-        color: inherit;
-        width: 100%;
-        height: 100%;
-        position: relative;
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-      }
-
-      div.content.error {
-        border: 1px solid rgb(255, 41, 41);
-        background-color: rgba(248, 183, 183, 0.5);
-      }
-
-      :host([editing]) div.content.error{
-        border-style: dotted;
-      }
-
       div.content .element {
-        border: 1px solid transparent;
-        padding: 0px 2px;
         background-color: transparent;
         width: 100%;
       }
-
-      div.content .element.number {
+      div.content:not([editing]) .element.number {
         text-align: right;
       }
       div.content .element.financial {
         /** Nothing yet */
       }
 
+
+      /** TODO: check this */
       div[hidden]{
         display: none;
       }
 
-
       select,
+      select option,
       input,
       iron-input,
       vaadin-combo-box-light {
         color: inherit;
         font-family: inherit;
         width: 100%;
-        box-sizing: border-box;
         font-weight: inherit;
+        font-size: inherit;
+        padding: 0px;
+        display: flex;
+        border: none;
+        box-sizing: border-box;
+        outline: none;
       }
 
-      vaadin-combo-box-ligh {
-        min-width: 500px !important;
+        
+      /** Hack to remove the forced padding from the browser */
+      select,
+      input {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        padding: 0px;
+      }
+
+      vaadin-combo-box-light {
+        min-width: 100px !important;
       }
 
       /** Turn off input[type=number] arrows/spiner */
@@ -106,13 +116,6 @@ Example of usage:
         -webkit-appearance: none;
       }
 
-      input,
-      select,
-      iron-input {
-        outline: none;
-        font-size: inherit;
-        border: none;
-      }
 
       /** Used for vaadin dropdown where the inner input shouldn't choose its background-color */
       iron-input input {
@@ -122,8 +125,15 @@ Example of usage:
       div.content[disabled],
       input[disabled],
       select[disabled] {
-        border: none;
         background: transparent;
+      }
+      
+      div.content.error {
+        border: 1px solid rgb(255, 41, 41);
+        background-color: rgba(248, 183, 183, 0.5);
+      }
+      div.content[disabled].error {
+        border: 1px solid transparent;
       }
 
       iron-icon {
@@ -145,7 +155,7 @@ Example of usage:
       }
 
     </style>
-    <div id="scalar" class$="content [[_getErrorClass(data)]]" disabled$="[[disabled]]" title="[[_title]]">
+    <div id="scalar" class$="content [[_getErrorClass(data)]]" editing$="[[editing]]" disabled$="[[_disabled]]" title="[[_title]]">
 
       <!-- Icon -->
       <template is="dom-if" if="[[_isDataOfType(data, 'icon')]]">
@@ -154,7 +164,7 @@ Example of usage:
               class$="input element [[_elementType]] [[_elementVariant]]"
               value$="[[_value]]"
               title="[[_title]]"
-              disabled="[[disabled]]"
+              disabled="[[_disabled]]"
               placeholder="[[placeholder]]"
               on-change="_onChange"
               on-keyup="_onKeyup"
@@ -188,54 +198,54 @@ Example of usage:
 
         <!-- Editing primitive value -->
         <template is="dom-if" if="[[_isDataOfTypePrimitive(data)]]">
-          <template is="dom-if" if="[[!disabled]]">
+          <template is="dom-if" if="[[!_disabled]]">
             <input
                 class$="input element [[_elementType]] [[_elementVariant]]"
                 type$="[[_getType(data)]]"
                 value$="[[_value]]"
                 title="[[_title]]"
-                disabled="[[disabled]]"
+                disabled="[[_disabled]]"
                 placeholder="[[placeholder]]"
                 on-change="_onChange"
                 on-keyup="_onKeyup"
                 on-keydown="_onKeydown"
             >
           </template>
-          <template is="dom-if" if="[[disabled]]">
+          <template is="dom-if" if="[[_disabled]]">
             [[_formatValue(data, _value, _suggestions)]]
           </template>
         </template>
 
         <!-- Editing date and timestamp value -->
         <template is="dom-if" if="[[_isDataOfTypeDate(data)]]">
-          <template is="dom-if" if="[[!disabled]]">
+          <template is="dom-if" if="[[!_disabled]]">
             <input
                 class$="input element [[_elementType]] [[_elementVariant]]"
                 type$="[[_parseHTMLDateType(data)]]"
                 value$="[[_formatHTMLDatetime(data, _value)]]"
                 title="[[_title]]"
-                disabled="[[disabled]]"
+                disabled="[[_disabled]]"
                 placeholder="[[placeholder]]"
                 on-change="_onChange"
                 on-keyup="_onKeyup"
                 on-keydown="_onKeydown"
             >
           </template>
-          <template is="dom-if" if="[[disabled]]">
+          <template is="dom-if" if="[[_disabled]]">
             [[_formatValue(data, _value, _suggestions)]]
           </template>
         </template>
 
         <!-- Editing dropdown -->
         <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
-          <template is="dom-if" if="[[!disabled]]">
+          <template is="dom-if" if="[[!_disabled]]">
             <vaadin-combo-box-light
               class$="input element dropdown [[_elementType]] [[_elementVariant]]"
               placeholder="[[placeholder]]"
               items="[[_suggestions]]"
               value="[[_getLabelFromValue(_suggestions, _value)]]"
               attr-for-value="bind-value"
-              disabled="[[disabled]]"
+              disabled="[[_disabled]]"
               allow-custom-value
               selected-item="{{_dropdownSelectedItem}}"
               >
@@ -245,7 +255,7 @@ Example of usage:
               <iron-input>
                 <input
                     placeholder="[[placeholder]]"
-                    disabled$="[[disabled]]"
+                    disabled$="[[_disabled]]"
                     on-keyup="_onKeyup"
                     on-keydown="_onKeydown"
                 >
@@ -256,20 +266,20 @@ Example of usage:
 
         <!-- Editing checkbox -->
         <template is="dom-if" if="[[_isDataOfType(data, 'checkbox')]]">
-          <template is="dom-if" if="[[!disabled]]">
+          <template is="dom-if" if="[[!_disabled]]">
             <select
                 class$="input element checkbox [[_elementType]] [[_elementVariant]]"
-                disabled="[[disabled]]"
+                disabled="[[_disabled]]"
                 on-change="_onTick"
                 value="[[_value]]"
                 on-keyup="_onKeyup"
             >
-              <option>undefined</option>
+              <option>unset</option>
               <option value=true>true</option>
               <option value=false>false</option>
             </select>
           </template>
-          <template is="dom-if" if="[[disabled]]">
+          <template is="dom-if" if="[[_disabled]]">
             [[_value]]
           </template>
         </template>
@@ -329,17 +339,27 @@ Example of usage:
             reflectToAttribute: true
           },
 
+          /** The new value that is set while editing */
+          newValue: {
+            type: String,
+            notify: true
+          },
+
           /**
            * The input field will be disabled when the editing mode is
            * activated
            */
           disabled: {
             type: Boolean,
-            notify: true,
-            value: false,
+            notify: true, 
+            value: false, 
             reflectToAttribute: true,
+          },
+          _disabled: {
+            type: Boolean,
+            notify: true,
             observer: "_disabledChanged",
-            computed: "_computeDisabled(data)"
+            computed: "_computeDisabled(data, disabled)"
           },
 
           /** Placeholder for the field */
@@ -422,7 +442,10 @@ Example of usage:
       }
 
       /** Computes the disable option from the schema */
-      _computeDisabled( data) {
+      _computeDisabled( data, disabled) {
+        if(disabled != undefined) {
+          return disabled;
+        }
         if(data.get("schema")){
           return data.get("schema").get("disabled") || false;
         }
@@ -535,6 +558,7 @@ Example of usage:
           this._dispatchChangeEvent( value)
           this.__previousOnChangeValue = value;
         }
+        this.newValue = value;
       }
 
       _dropdownSelectedItemChanged(_dropdownSelectedItem) {
@@ -570,10 +594,11 @@ Example of usage:
       _onTick(e){
         var elem = e.currentTarget;
         var value = elem.options[elem.selectedIndex].value;
-        var checked = undefined;
+        var checked = "";
         if(value == "true"){checked = true;}
         else if(value == "false"){checked = false;}
         this._dispatchChangeEvent( checked);
+        this.newValue = checked;
       }
 
       /** Retrieves the type from the schema */
@@ -588,7 +613,11 @@ Example of usage:
       /** Retrieves the style from the schema */
       _getStyle(data){
         if(data && data.get("schema") && data.get("schema").get("style")){
-          return data.get("schema").get("style");
+          var style = data.get("schema").get("style");
+          if(typeof style === "function") {
+            style = style(data);
+          }
+          return style;
         } else {
           return '';
         }
@@ -686,6 +715,8 @@ Example of usage:
         var variant = this._getVariant(data);
         if( type == 'number' && variant == 'financial') {
           return this._financialNumber(value);
+        } else if( type == 'number' && variant == 'financial-locale') {
+          return this._financialNumber(value, true);
         } else if( type == 'number' && variant == 'percentage') {
           return this._percentageNumber(value);
         } else if( ['date', 'datetime-local', 'timestamp'].indexOf(type) > -1 && _value) {
@@ -728,7 +759,10 @@ Example of usage:
         return string;
       }
 
-      _financialNumber(x) {
+      _financialNumber(x, isLocale) {
+        if(isLocale){
+          return x.toLocaleString(undefined, {minimumFractionDigits: 2});
+        }
         var parts = x.toString().split(".");
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
         parts[1] = (parseFloat("0."+parts[1]).toFixed(2).split("."))[1] || "00";
@@ -759,14 +793,14 @@ Example of usage:
 
       _getTextStyle(data, _value){
         if(_value == undefined){ return ""; }
+        var style = this._getStyle(data);
         var type = this._getType(data);
         var variant = this._getVariant(data);
-        var style = this._getStyle(data);
-        if(type == "number" && variant == "financial"){
+        if(type == "number" && ["financial", "financial-locale"].indexOf(variant) > -1){
           if(_value > 0){
-            return "color: yellowgreen;"+style;
+            style = "color: yellowgreen;"+style;
           } else if( _value < 0) {
-            return "color: indianred;"+style;
+            style = "color: indianred;"+style;
           }
         }
         return style;
@@ -775,6 +809,10 @@ Example of usage:
       empty(){
         this.data = this.data.set("value", "");
         this._forceValue("");
+      }
+
+      getValue() {
+        return this._value;
       }
     }
     window.customElements.define(DataScalars.is, DataScalars);
