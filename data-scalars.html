@@ -189,7 +189,7 @@ Example of usage:
       <template is="dom-if" if="[[_shouldShowValue(data)]]">
         <span style="display: none">[[_value]]</span> <!-- In order to correctly us the DOM sort (eg: vaadin grid) -->
         <template is="dom-if" if="[[!editing]]">
-          <div style="[[_getTextStyle(data, _value)]]" title="[[_computeTitle(data)]]" class$="element [[_elementType]] [[_elementVariant]]">
+          <div style="[[_getTextStyle(data, metaData, _value)]]" title="[[_computeTitle(data)]]" class$="element [[_elementType]] [[_elementVariant]]">
             [[_formatValue(data, _value, _suggestions)]]
           </div>
         </template>
@@ -421,7 +421,9 @@ Example of usage:
           _dropdownSelectedItem: {
             type: Object,
             observer: "_dropdownSelectedItemChanged"
-          }
+          },
+
+          metaData: Object
         };
       }
 
@@ -612,11 +614,11 @@ Example of usage:
       }
 
       /** Retrieves the style from the schema */
-      _getStyle(data){
+      _getStyle(data, metaData){
         if(data && data.get("schema") && data.get("schema").get("style")){
           var style = data.get("schema").get("style");
           if(typeof style === "function") {
-            style = style(data);
+            style = style(data, metaData);
           }
           return style;
         } else {
@@ -792,9 +794,9 @@ Example of usage:
         return label;
       }
 
-      _getTextStyle(data, _value){
+      _getTextStyle(data, metaData, _value){
         if(_value == undefined){ return ""; }
-        var style = this._getStyle(data);
+        var style = this._getStyle(data, metaData);
         var type = this._getType(data);
         var variant = this._getVariant(data);
         if(type == "number" && ["financial", "financial-locale"].indexOf(variant) > -1){
