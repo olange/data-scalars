@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.2.1"></a>
+## [2.2.1](https://github.com/olange/data-scalars/compare/v2.2.0...v2.2.1) (2019-01-29)
+
+
+### Bug Fixes
+
+* **financial:** don't display .00 when value is undefined ([33b72d7](https://github.com/olange/data-scalars/commit/33b72d7))
+
+
+
 <a name="2.2.0"></a>
 # [2.2.0](https://github.com/olange/data-scalars/compare/v2.1.1...v2.2.0) (2018-12-11)
 
