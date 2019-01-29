@@ -56,12 +56,12 @@ Example of usage:
         box-sizing: border-box;
         align-items: center;
       }
-     
+
       div.content[editing] {
         background-color: rgba(255, 255, 255, 0.1);
         border: 1px dotted gray;
       }
-      
+
       div.content .element {
         background-color: transparent;
         width: 100%;
@@ -96,7 +96,7 @@ Example of usage:
         outline: none;
       }
 
-        
+
       /** Hack to remove the forced padding from the browser */
       select,
       input {
@@ -128,7 +128,7 @@ Example of usage:
         background: transparent;
         border: none !important;
       }
-      
+
       div.content.error {
         border: 1px solid rgb(255, 41, 41);
         background-color: rgba(248, 183, 183, 0.5);
@@ -156,7 +156,7 @@ Example of usage:
       }
 
     </style>
-    <div id="scalar" class$="content [[_getErrorClass(data)]]" editing$="[[editing]]" 
+    <div id="scalar" class$="content [[_getErrorClass(data)]]" editing$="[[editing]]"
          disabled$="[[_disabled]]" title="[[_title]]">
 
       <!-- Icon -->
@@ -353,7 +353,7 @@ Example of usage:
            */
           disabled: {
             type: Boolean,
-            notify: true, 
+            notify: true,
             reflectToAttribute: true,
           },
           _disabled: {
@@ -763,6 +763,7 @@ Example of usage:
       }
 
       _financialNumber(x, isLocale) {
+        if(x == undefined || x == ""){ return x; }
         if(isLocale){
           return x.toLocaleString(undefined, {minimumFractionDigits: 2});
         }
