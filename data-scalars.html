@@ -764,6 +764,7 @@ Example of usage:
 
       _financialNumber(x, isLocale) {
         if(x == undefined || x == ""){ return x; }
+        x = Math.round(x * 100) / 100 // Round to 2 decimals to avoid having 19999.9999999 formatted to 19'999.00 which is wrong
         if(isLocale){
           return x.toLocaleString(undefined, {minimumFractionDigits: 2});
         }
