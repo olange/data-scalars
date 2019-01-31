@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.2.2"></a>
+## [2.2.2](https://github.com/olange/data-scalars/compare/v2.2.1...v2.2.2) (2019-01-31)
+
+
+### Bug Fixes
+
+* round financial numbers to 2 decimals correctly ([9d619f8](https://github.com/olange/data-scalars/commit/9d619f8))
+
+
+
 <a name="2.2.1"></a>
 ## [2.2.1](https://github.com/olange/data-scalars/compare/v2.2.0...v2.2.1) (2019-01-29)
 
