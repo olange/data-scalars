@@ -50,7 +50,7 @@
                   schema: {
                     type: "dropdown",
                     suggestions: [
-                      {label: "value1", value: "value1"}, {label: "value2", value: "value2"}
+                      {label: "label1", value: "value1"}, {label: "label2", value: "value2"}
                     ]
                   }
                 });
@@ -87,7 +87,7 @@
                     var value = el.getValue();
                     var newValue = el.newValue;
                     if(newValue != undefined) {
-                      console.log("Value of", el.name, ":", value, "->", newValue);
+                      console.log(`Value of '${el.name}' -> oldValue: "${value}", newValue: "${newValue}"`);
                       el.data = el.data.set("value", newValue);
                     }
                   });

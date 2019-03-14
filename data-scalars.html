@@ -555,8 +555,8 @@ Example of usage:
         }
 
         // We need to make sure that the onChange was triggered twice.
-        // After the edition is finished, the event is resent to notify
-        // about the full changing string.
+        // After the user has finished doing an edition, the event is resent
+        // to notify about the latest value.
         if(this.__previousOnChangeValue != value){
           this._dispatchChangeEvent( value)
           this.__previousOnChangeValue = value;
@@ -566,7 +566,7 @@ Example of usage:
 
       _dropdownSelectedItemChanged(_dropdownSelectedItem) {
         if(_dropdownSelectedItem) {
-          var e = { currentTarget: { value: _dropdownSelectedItem.label}};
+          var e = { currentTarget: { value: _dropdownSelectedItem.value}};
           this._onChange(e);
         }
       }
