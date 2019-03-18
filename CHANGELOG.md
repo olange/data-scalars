@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.3.0](https://github.com/olange/data-scalars/compare/v2.2.3...v2.3.0) (2019-03-18)
+
+
+### Features
+
+* **decimals:** adds 'decimals' field in the schema for financial and percentage ([99faed9](https://github.com/olange/data-scalars/commit/99faed9))
+
+
+
 ## [2.2.3](https://github.com/olange/data-scalars/compare/v2.2.2...v2.2.3) (2019-03-14)
 
 
