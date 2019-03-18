@@ -13,9 +13,7 @@ Designed to work hand-in-hand with data nuggets data structures delivered by ‹
 
 Example of usage:
 
-  <data-point selector="coord" data="{{dataNugget}}" item="{{dataEgg}}">
-    <data-scalars data="{{dataEgg}}" editing="true|false"></data-scalars>
-  </data-point>
+  <data-scalars data="{{dataEgg}}"></data-scalars>
 -->
 <dom-module id="custom-vaadin-combo-box-item" theme-for="vaadin-combo-box-item">
   <template>
@@ -224,7 +222,7 @@ Example of usage:
             <input
                 class$="input element [[_elementType]] [[_elementVariant]]"
                 type$="[[_parseHTMLDateType(data)]]"
-                value$="[[_formatHTMLDatetime(data, _value)]]"
+                value$="[[_formatDatetime(data, _value, 'true')]]"
                 title="[[_title]]"
                 disabled="[[_disabled]]"
                 placeholder="[[placeholder]]"
@@ -312,14 +310,16 @@ Example of usage:
            *
            *    schema = {
            *      editing: true|false,
-           *      type: text|number|date|boolean|dropdown,
-           *      variant: ...,
-           *      hidden: true|false,
+           *      type:       text|number|date|boolean|dropdown,
+           *      hidden:     true|false,
+           *      disabled:   true|false
+           *      variant:    ... see bellow ...,
+           *      decimals:   a positive number
            *
-           *    schema.variant = << depends on schema.type >>
-           *      text:   default
-           *      number: financial|default;
-           *      date:   default
+           *    Variants:
+           *      if the type is text:   default
+           *      if the type is date:   default
+           *      if the type is number: financial|percentage|default;
            * ```
            */
           data: {
@@ -646,6 +646,15 @@ Example of usage:
         }
       }
 
+      /** Returns the schema decimals information */
+      _getDecimals(data) {
+        if(data && data.get("schema") && data.get("schema").get("decimals")){
+          return data.get("schema").get("decimals");
+        } else {
+          return undefined;
+        }
+      }
+
       /**
         * Checks if the type, given from the schema, is an HTML primitive type.
         * This is used to know if we can use an HTML tag instead of a custom component
@@ -716,66 +725,57 @@ Example of usage:
         var value = this._getLabelFromValue(_suggestions, _value);
         var type = this._getType(data);
         var variant = this._getVariant(data);
-        if( type == 'number' && variant == 'financial') {
-          return this._financialNumber(value);
-        } else if( type == 'number' && variant == 'financial-locale') {
-          return this._financialNumber(value, true);
-        } else if( type == 'number' && variant == 'percentage') {
-          return this._percentageNumber(value);
-        } else if( ['date', 'datetime-local', 'timestamp'].indexOf(type) > -1 && _value) {
-          var date = new Date(value);
-          var month = (date.getMonth()+1)+"";
-          month = month.length > 1 ? month : '0'+month;
-          var month = (date.getMonth()+1)+"";
-          month = month.length > 1 ? month : '0'+month;
-          var day = (date.getDate()+"").length > 1 ? date.getDate() : '0'+date.getDate();
-          var year = date.getFullYear();
-          var hours = (date.getHours()+"").length > 1 ? (date.getHours()) : '0'+date.getHours();
-          var minutes = (date.getMinutes()+"").length > 1 ? (date.getMinutes()) : '0'+date.getMinutes();
-          var string = day+"."+month+"."+year;
-          if( type != 'date') {
-            string += " "+hours+":"+minutes;
+        if( type == 'number') {
+          var decimals = this._getDecimals(data);
+          switch(variant){
+            case 'financial':
+              return this._financialNumber(value, decimals);
+            case 'financial-locale':
+              return this._financialNumber(value, decimals, true);
+            case 'percentage':
+              return this._percentageNumber(value, decimals);
+            default:
+              return value;
           }
-          return string;
+        } else if( ['date', 'datetime-local', 'timestamp'].indexOf(type) > -1 && _value) {
+          return this._formatDatetime(data, _value);
         }
         return value;
       }
 
-      _formatHTMLDatetime(data, _value){
+      _formatDatetime(data, _value, html=false){
         if(_value){
-          var date = new Date(_value);
-          var month = (date.getMonth()+1)+"";
-          month = month.length > 1 ? month : '0'+month;
           var type = this._getType(data);
+          var date = new Date(_value);
           var month = (date.getMonth()+1)+"";
           month = month.length > 1 ? month : '0'+month;
           var day = (date.getDate()+"").length > 1 ? date.getDate() : '0'+date.getDate();
           var year = date.getFullYear();
           var hours = (date.getHours()+"").length > 1 ? (date.getHours()) : '0'+date.getHours();
           var minutes = (date.getMinutes()+"").length > 1 ? (date.getMinutes()) : '0'+date.getMinutes();
-          var string = year+"-"+month+"-"+day;
+          var string = html ? year+"-"+month+"-"+day : day+"."+month+"."+year;
           if( type != 'date') {
-            string += " "+hours+":"+minutes;
+            string += html ? "T" : " ";
+            string += hours+":"+minutes;
           }
-          string = string.replace(' ', 'T');
         }
         return string;
       }
 
-      _financialNumber(x, isLocale) {
+      _financialNumber(x, decimals=2, isLocale) {
         if(x == undefined || x == ""){ return x; }
-        x = Math.round(x * 100) / 100 // Round to 2 decimals to avoid having 19999.9999999 formatted to 19'999.00 which is wrong
+        x = Math.round(x * Math.pow(10, decimals)) / Math.pow(10, decimals) // Round to the decimals number. This avoids having 19999.9999999 formatted to 19'999.00 which is wrong
         if(isLocale){
-          return x.toLocaleString(undefined, {minimumFractionDigits: 2});
+          return x.toLocaleString(undefined, {minimumFractionDigits: decimals});
         }
         var parts = x.toString().split(".");
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
-        parts[1] = (parseFloat("0."+parts[1]).toFixed(2).split("."))[1] || "00";
+        parts[1] = (parseFloat("0."+parts[1]).toFixed(decimals).split("."))[1] || "00";
         return parts.join(".");
       }
 
-      _percentageNumber(x) {
-        return x !== undefined ? (parseFloat(x) * 100).toFixed(2) + " %" : x;
+      _percentageNumber(x, decimals=2) {
+        return x !== undefined ? (parseFloat(x) * 100).toFixed(decimals) + " %" : x;
       }
 
       __equals(a, b) {
