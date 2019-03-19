@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.4.0](https://github.com/olange/data-scalars/compare/v2.3.0...v2.4.0) (2019-03-19)
+
+
+### Features
+
+* **custom-value:** add option to configure custom-value on dropdown ([832b89f](https://github.com/olange/data-scalars/commit/832b89f))
+
+
+
 # [2.3.0](https://github.com/olange/data-scalars/compare/v2.2.3...v2.3.0) (2019-03-18)
 
 
