@@ -246,7 +246,7 @@ Example of usage:
               value="[[_getLabelFromValue(_suggestions, _value)]]"
               attr-for-value="bind-value"
               disabled="[[_disabled]]"
-              allow-custom-value
+              allow-custom-value="[[_allowCustomValue]]"
               selected-item="{{_dropdownSelectedItem}}"
               >
               <template>
@@ -382,6 +382,16 @@ Example of usage:
             computed: "_computeElementVariant(data)"
           },
 
+          /**
+           * Used to know if the dropdown can have custom values.
+           * To disable custom values set the variant to "no-custom-value".
+           */
+          _allowCustomValue: {
+            type: Boolean,
+            value: true,
+            computed: "_computeAllowCustomValue(_elementType, _elementVariant)"
+          },
+
 
           /**
            * Suggestions that are computed from the schema
@@ -493,6 +503,10 @@ Example of usage:
       /** Computes the element variant type from the schema */
       _computeElementVariant( data) {
         return this._getVariant( data);
+      }
+
+      _computeAllowCustomValue( type, variant) {
+        return type == "dropdown" && variant != "no-custom-value" ? true : false;
       }
 
       /** Helpers */
