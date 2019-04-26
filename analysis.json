@@ -1,0 +1,1431 @@
+{
+  "schema_version": "1.0.0",
+  "elements": [
+    {
+      "description": "`data-scalars`\nAutomatic representation of a scalar value",
+      "summary": "",
+      "path": "data-scalars.js",
+      "properties": [
+        {
+          "name": "data",
+          "type": "Object | null | undefined",
+          "description": "The given `dataEgg`. A `dataEgg` is one element of the `dataNugget`.\nExample:\n\n```\n   dataEgg = {value: …, schema: …, format: … [, metadata: …]}\n\n   schema = {\n     editing: true|false,\n     type:       text|number|date|boolean|dropdown,\n     hidden:     true|false,\n     disabled:   true|false\n     variant:    ... see bellow ...,\n     decimals:   a positive number\n\n   Variants:\n     if the type is text:   default\n     if the type is date:   default\n     if the type is number: financial|percentage|default;\n```",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 278,
+              "column": 6
+            },
+            "end": {
+              "line": 281,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "attributeType": "Object"
+            }
+          }
+        },
+        {
+          "name": "name",
+          "type": "string | null | undefined",
+          "description": "Name of the data-scalar",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 6
+            },
+            "end": {
+              "line": 287,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "String"
+            }
+          }
+        },
+        {
+          "name": "editing",
+          "type": "boolean | null | undefined",
+          "description": "Defines if the data-scalar is in editing mode or not",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 290,
+              "column": 6
+            },
+            "end": {
+              "line": 295,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "attributeType": "Boolean"
+            }
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "newValue",
+          "type": "string | null | undefined",
+          "description": "The new value that is set while editing",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 298,
+              "column": 6
+            },
+            "end": {
+              "line": 301,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "attributeType": "String"
+            }
+          }
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | null | undefined",
+          "description": "The input field will be disabled when the editing mode is\nactivated",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 307,
+              "column": 6
+            },
+            "end": {
+              "line": 311,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "attributeType": "Boolean"
+            }
+          }
+        },
+        {
+          "name": "_disabled",
+          "type": "boolean | null | undefined",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 312,
+              "column": 6
+            },
+            "end": {
+              "line": 317,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "observer": "\"_disabledChanged\"",
+              "readOnly": true,
+              "attributeType": "Boolean"
+            }
+          }
+        },
+        {
+          "name": "placeholder",
+          "type": "string | null | undefined",
+          "description": "Placeholder for the field",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 320,
+              "column": 6
+            },
+            "end": {
+              "line": 322,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "String"
+            }
+          }
+        },
+        {
+          "name": "_elementType",
+          "type": "string | null | undefined",
+          "description": "Internal computed element type",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 325,
+              "column": 6
+            },
+            "end": {
+              "line": 329,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true,
+              "attributeType": "String"
+            }
+          },
+          "defaultValue": "\"text\""
+        },
+        {
+          "name": "_elementVariant",
+          "type": "string | null | undefined",
+          "description": "Internal computed element variant type",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 332,
+              "column": 6
+            },
+            "end": {
+              "line": 336,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true,
+              "attributeType": "String"
+            }
+          },
+          "defaultValue": "\"default\""
+        },
+        {
+          "name": "_allowCustomValue",
+          "type": "boolean | null | undefined",
+          "description": "Used to know if the dropdown can have custom values.\nTo disable custom values set the variant to \"no-custom-value\".",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 342,
+              "column": 6
+            },
+            "end": {
+              "line": 346,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true,
+              "attributeType": "Boolean"
+            }
+          },
+          "defaultValue": "true"
+        },
+        {
+          "name": "_suggestions",
+          "type": "Array | null | undefined",
+          "description": "Suggestions that are computed from the schema\neg: [{label: …, value:…}, …]",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 353,
+              "column": 6
+            },
+            "end": {
+              "line": 356,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true,
+              "attributeType": "Array"
+            }
+          }
+        },
+        {
+          "name": "_suggestionsByLabel",
+          "type": "Object | null | undefined",
+          "description": "Suggestions object structured by `label`\neg: {\"label1\": \"value1\", \"label2\": \"value2\", …}",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 362,
+              "column": 6
+            },
+            "end": {
+              "line": 365,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true,
+              "attributeType": "Object"
+            }
+          }
+        },
+        {
+          "name": "_value",
+          "type": "string | null | undefined",
+          "description": "Internal computed value",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 368,
+              "column": 6
+            },
+            "end": {
+              "line": 371,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true,
+              "attributeType": "String"
+            }
+          }
+        },
+        {
+          "name": "_title",
+          "type": "string | null | undefined",
+          "description": "Internal computed tooltip title",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 374,
+              "column": 6
+            },
+            "end": {
+              "line": 377,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true,
+              "attributeType": "String"
+            }
+          }
+        },
+        {
+          "name": "__previousOnChangeValue",
+          "type": "string | null | undefined",
+          "description": "",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 379,
+              "column": 6
+            },
+            "end": {
+              "line": 382,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "String"
+            }
+          },
+          "defaultValue": "\"\""
+        },
+        {
+          "name": "_dropdownSelectedItem",
+          "type": "Object | null | undefined",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 384,
+              "column": 6
+            },
+            "end": {
+              "line": 387,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_dropdownSelectedItemChanged\"",
+              "attributeType": "Object"
+            }
+          }
+        },
+        {
+          "name": "metaData",
+          "type": "Object | null | undefined",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 389,
+              "column": 6
+            },
+            "end": {
+              "line": 389,
+              "column": 22
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Object"
+            }
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "ready",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 393,
+              "column": 2
+            },
+            "end": {
+              "line": 395,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_computeValue",
+          "description": "Compute the `_value` and update its input field to make sure it is correct",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 398,
+              "column": 2
+            },
+            "end": {
+              "line": 408,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_computeDisabled",
+          "description": "Computes the disable option from the schema",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 411,
+              "column": 2
+            },
+            "end": {
+              "line": 419,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            },
+            {
+              "name": "disabled"
+            }
+          ]
+        },
+        {
+          "name": "_computeSuggestions",
+          "description": "Computes the suggestions from the schema",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 422,
+              "column": 2
+            },
+            "end": {
+              "line": 427,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_computeSuggestionsByLabel",
+          "description": "Computes the suggestions scrutured by 'label'",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 430,
+              "column": 2
+            },
+            "end": {
+              "line": 438,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "_suggestions"
+            }
+          ]
+        },
+        {
+          "name": "_computeTitle",
+          "description": "Computes the title that is display when hovering a field. If there is a specific error\nin the schema, the error will be shown.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 444,
+              "column": 2
+            },
+            "end": {
+              "line": 449,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            },
+            {
+              "name": "title"
+            }
+          ]
+        },
+        {
+          "name": "_computeElementType",
+          "description": "Computes the element type from the schema",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 452,
+              "column": 2
+            },
+            "end": {
+              "line": 454,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_computeElementVariant",
+          "description": "Computes the element variant type from the schema",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 457,
+              "column": 2
+            },
+            "end": {
+              "line": 459,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_computeAllowCustomValue",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 461,
+              "column": 2
+            },
+            "end": {
+              "line": 463,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "type"
+            },
+            {
+              "name": "variant"
+            }
+          ]
+        },
+        {
+          "name": "_disabledChanged",
+          "description": "When `disabled` is changed, update the value to make sure it's correct in the input field",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 468,
+              "column": 2
+            },
+            "end": {
+              "line": 474,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "disabled"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_forceValue",
+          "description": "Make sure that the user edition is deleted and replaced by the default value",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 477,
+              "column": 2
+            },
+            "end": {
+              "line": 497,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "value"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_getErrorClass",
+          "description": "If there is an error, the `error` class is returned to the input field",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 500,
+              "column": 2
+            },
+            "end": {
+              "line": 505,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_dispatchChangeEvent",
+          "description": "Dispatch the 'change' event with the name and value of the component",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 508,
+              "column": 2
+            },
+            "end": {
+              "line": 511,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "value"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_onChange",
+          "description": "Dispatch a custom event 'change' when the input changes.\nThe event carries the name and value of the input in its details.\n  {'detail': {name: \"the name\", value: \"the value\"}}",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 518,
+              "column": 2
+            },
+            "end": {
+              "line": 532,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_dropdownSelectedItemChanged",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 534,
+              "column": 2
+            },
+            "end": {
+              "line": 539,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "_dropdownSelectedItem"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_onKeyup",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 541,
+              "column": 2
+            },
+            "end": {
+              "line": 543,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_onKeydown",
+          "description": "Dispatch an event when some special keys are used.\nEg:\n    - Escape key will dispatch the 'cancel' event\n    - Enter key will dispatch the 'validate' event",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 551,
+              "column": 2
+            },
+            "end": {
+              "line": 561,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_onTick",
+          "description": "Dispatch a custom event 'change' when the checkbox attribut has changed",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 564,
+              "column": 2
+            },
+            "end": {
+              "line": 572,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e"
+            }
+          ],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "_getType",
+          "description": "Retrieves the type from the schema",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 575,
+              "column": 2
+            },
+            "end": {
+              "line": 581,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_getStyle",
+          "description": "Retrieves the style from the schema",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 584,
+              "column": 2
+            },
+            "end": {
+              "line": 594,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            },
+            {
+              "name": "metaData"
+            }
+          ]
+        },
+        {
+          "name": "_parseHTMLDateType",
+          "description": "Return the parsed HTML date type",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 597,
+              "column": 2
+            },
+            "end": {
+              "line": 605,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_getVariant",
+          "description": "Returns the schema type variant",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 608,
+              "column": 2
+            },
+            "end": {
+              "line": 614,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_getDecimals",
+          "description": "Returns the schema decimals information",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 617,
+              "column": 2
+            },
+            "end": {
+              "line": 623,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_isDataOfTypePrimitive",
+          "description": "Checks if the type, given from the schema, is an HTML primitive type.\nThis is used to know if we can use an HTML tag instead of a custom component\nto present the data value.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 630,
+              "column": 2
+            },
+            "end": {
+              "line": 638,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_isDataOfTypeDate",
+          "description": "Returns true if the data type is a `date` type",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 641,
+              "column": 2
+            },
+            "end": {
+              "line": 645,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_isDataOfType",
+          "description": "Returns true if the data is of type `elType`.\nBy default and if the type is not specified, it will return true as if `elType` == 'text'",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 651,
+              "column": 2
+            },
+            "end": {
+              "line": 662,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            },
+            {
+              "name": "typeToCheck"
+            }
+          ]
+        },
+        {
+          "name": "_shouldShowValue",
+          "description": "Should display the data value. Eg: the icon should not display its string",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 667,
+              "column": 2
+            },
+            "end": {
+              "line": 673,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_getIconName",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 675,
+              "column": 2
+            },
+            "end": {
+              "line": 681,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "_suggestionsByLabel"
+            },
+            {
+              "name": "_value"
+            }
+          ]
+        },
+        {
+          "name": "_getFlagName",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 683,
+              "column": 2
+            },
+            "end": {
+              "line": 689,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "_suggestionsByLabel"
+            },
+            {
+              "name": "_value"
+            }
+          ]
+        },
+        {
+          "name": "_formatValue",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 691,
+              "column": 2
+            },
+            "end": {
+              "line": 711,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            },
+            {
+              "name": "_value"
+            },
+            {
+              "name": "_suggestions"
+            }
+          ]
+        },
+        {
+          "name": "_formatDatetime",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 713,
+              "column": 2
+            },
+            "end": {
+              "line": 730,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            },
+            {
+              "name": "_value"
+            },
+            {
+              "name": "html",
+              "defaultValue": "false"
+            }
+          ]
+        },
+        {
+          "name": "_financialNumber",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 732,
+              "column": 2
+            },
+            "end": {
+              "line": 742,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "x"
+            },
+            {
+              "name": "decimals",
+              "defaultValue": "2"
+            },
+            {
+              "name": "isLocale"
+            }
+          ]
+        },
+        {
+          "name": "_percentageNumber",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 744,
+              "column": 2
+            },
+            "end": {
+              "line": 746,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "x"
+            },
+            {
+              "name": "decimals",
+              "defaultValue": "2"
+            }
+          ]
+        },
+        {
+          "name": "__equals",
+          "description": "",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 748,
+              "column": 2
+            },
+            "end": {
+              "line": 750,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "a"
+            },
+            {
+              "name": "b"
+            }
+          ]
+        },
+        {
+          "name": "_getLabelFromValue",
+          "description": "Retrieves the suggestion label from the value if exists.\nElse it returns the value",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 756,
+              "column": 2
+            },
+            "end": {
+              "line": 764,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "_suggestions"
+            },
+            {
+              "name": "_value"
+            }
+          ]
+        },
+        {
+          "name": "_getTextStyle",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 766,
+              "column": 2
+            },
+            "end": {
+              "line": 779,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            },
+            {
+              "name": "metaData"
+            },
+            {
+              "name": "_value"
+            }
+          ]
+        },
+        {
+          "name": "empty",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 781,
+              "column": 2
+            },
+            "end": {
+              "line": 784,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "void"
+          }
+        },
+        {
+          "name": "getValue",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 786,
+              "column": 2
+            },
+            "end": {
+              "line": 788,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": []
+        }
+      ],
+      "staticMethods": [],
+      "demos": [
+        {
+          "url": "demo/index.html",
+          "description": ""
+        }
+      ],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 49,
+          "column": 0
+        },
+        "end": {
+          "line": 789,
+          "column": 1
+        }
+      },
+      "privacy": "public",
+      "superclass": "PolymerElement",
+      "name": "DataScalars",
+      "attributes": [
+        {
+          "name": "data",
+          "description": "The given `dataEgg`. A `dataEgg` is one element of the `dataNugget`.\nExample:\n\n```\n   dataEgg = {value: …, schema: …, format: … [, metadata: …]}\n\n   schema = {\n     editing: true|false,\n     type:       text|number|date|boolean|dropdown,\n     hidden:     true|false,\n     disabled:   true|false\n     variant:    ... see bellow ...,\n     decimals:   a positive number\n\n   Variants:\n     if the type is text:   default\n     if the type is date:   default\n     if the type is number: financial|percentage|default;\n```",
+          "sourceRange": {
+            "start": {
+              "line": 278,
+              "column": 6
+            },
+            "end": {
+              "line": 281,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "type": "Object | null | undefined"
+        },
+        {
+          "name": "name",
+          "description": "Name of the data-scalar",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 6
+            },
+            "end": {
+              "line": 287,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "type": "string | null | undefined"
+        },
+        {
+          "name": "editing",
+          "description": "Defines if the data-scalar is in editing mode or not",
+          "sourceRange": {
+            "start": {
+              "line": 290,
+              "column": 6
+            },
+            "end": {
+              "line": 295,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "type": "boolean | null | undefined"
+        },
+        {
+          "name": "new-value",
+          "description": "The new value that is set while editing",
+          "sourceRange": {
+            "start": {
+              "line": 298,
+              "column": 6
+            },
+            "end": {
+              "line": 301,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "type": "string | null | undefined"
+        },
+        {
+          "name": "disabled",
+          "description": "The input field will be disabled when the editing mode is\nactivated",
+          "sourceRange": {
+            "start": {
+              "line": 307,
+              "column": 6
+            },
+            "end": {
+              "line": 311,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "type": "boolean | null | undefined"
+        },
+        {
+          "name": "placeholder",
+          "description": "Placeholder for the field",
+          "sourceRange": {
+            "start": {
+              "line": 320,
+              "column": 6
+            },
+            "end": {
+              "line": 322,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "type": "string | null | undefined"
+        },
+        {
+          "name": "meta-data",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 389,
+              "column": 6
+            },
+            "end": {
+              "line": 389,
+              "column": 22
+            }
+          },
+          "metadata": {},
+          "type": "Object | null | undefined"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "data-changed",
+          "description": "Fired when the `data` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "editing-changed",
+          "description": "Fired when the `editing` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "new-value-changed",
+          "description": "Fired when the `newValue` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "disabled-changed",
+          "description": "Fired when the `disabled` property changes.",
+          "metadata": {}
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "data-scalars"
+    }
+  ]
+}

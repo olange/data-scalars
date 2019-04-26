@@ -1,4 +1,126 @@
 <!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <title>‹data-scalars›</title>
+
+    <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script type="module" src="/node_modules/@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+    <script type="module" src="/node_modules/@polymer/iron-demo-helpers/demo-snippet.js"></script>
+    <script src="/node_modules/immutable/dist/immutable.min.js"></script>
+
+    <script type="module">
+      import '../data-scalars.js';
+    </script>
+  </head>
+
+  <!-- Hack to have polymer @apply mixins and browser-sync to work -->
+  <script type="module">
+    const $_documentContainer = document.createElement('template');
+    $_documentContainer.innerHTML = `
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles"></style>
+    </custom-style>`;
+    document.body.appendChild($_documentContainer.content);
+  </script>
+
+  <body unresolved>
+    <div class="polymer-demo vertical-section-container centered">
+      <h1 id="data-scalars">‹data-scalars›</h1>
+      <div class="polymer-description">
+        <code>‹data-scalars›</code> TODO.
+        <br><br>
+        <div class="polymer-info">
+          See:
+            <a href="../docs.html#/elements/data-scalars" target="_blank">Documentation</a>
+            <a href="#data-scalars">Demo</a>
+        </div>
+      </div>
+      <br>
+      <demo-snippet>
+        <template>
+          <div id="container">
+            <data-scalars id="ds1" name="a dropdown"></data-scalars>
+            <data-scalars id="ds2" name="an error" disabled="true"></data-scalars>
+            <data-scalars id="ds3" name="an editable"></data-scalars>
+            <data-scalars id="ds4" name="an editable checkbox"></data-scalars>
+            <data-scalars id="ds5" name="A financial number"></data-scalars>
+            <button id="buttonEditable">Toggle editable</button>
+            <button id="buttonSubmit">Submit</button>
+          </div>
+          <script>
+            ds1.data = Immutable.fromJS({
+              value: "This is a dropdown field",
+              schema: {
+                type: "dropdown",
+                suggestions: [
+                  {label: "label1", value: "value1"}, {label: "label2", value: "value2"}
+                ]
+              }
+            });
+            ds2.data = Immutable.fromJS({
+              value: "A field with an error",
+              schema: {type: "text"},
+              error: "There is an mistake"
+            });
+            ds3.data = Immutable.fromJS({
+              value: "2018-10-25T00:00",
+              schema: {type: "date"}
+            });
+            ds4.data = Immutable.fromJS({
+              value: "true",
+              schema: {type: "checkbox", style: (d) => {
+                var data = d.toJS();
+                if(data.value == "true"){
+                  return "color: yellowgreen";
+                }
+              }}
+            });
+            ds5.data = Immutable.fromJS({
+              value: 1000,
+              schema: {type: "number", variant: "financial-locale"}
+            })
+
+            let elems = [ds1, ds2, ds3, ds4, ds5];
+            let editing = false;
+
+            buttonEditable.addEventListener('click', () => {
+              elems.forEach( (el) => {el.editing = !el.editing});
+              editing = !editing;
+            });
+
+            buttonSubmit.addEventListener('click', (e) => {
+              let hasNewValues = false;
+              elems.forEach( (el, i) => {
+                var name = el.name;
+                var value = el.getValue();
+                var newValue = el.newValue;
+                if(newValue != undefined) {
+                  hasNewValues = true;
+                  console.log(`Value of '${el.name}' -> oldValue: "${value}", newValue: "${newValue}"`);
+                  el.data = el.data.set("value", newValue);
+                }
+              });
+              if(editing){
+                buttonEditable.click();
+              }
+              if(!hasNewValues){
+                let msg = "Please start editing the form by pressing on 'Toggle editable'"
+                console.warn(msg); alert(msg);
+              }
+            });
+          </script>
+        </template>
+      </demo-snippet>
+
+
+    </div>
+  </body>
+</html>
+<!--
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -6,20 +128,28 @@
 
     <title>data-scalars demo</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../data-scalars.html">
+    <script type="module" src="../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+    <script type="module" src="../../@polymer/iron-demo-helpers/demo-snippet.js"></script>
+    <script type="module" src="../data-scalars.js"></script>
     <script src="../../immutable/dist/immutable.min.js"></script>
+    <script type="module">
+const $_documentContainer = document.createElement('template');
 
-    <custom-style>
+$_documentContainer.innerHTML = `<custom-style>
       <style is="custom-style" include="demo-pages-shared-styles">
       </style>
-    </custom-style>
+    </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
   </head>
   <body>
-    <div class="vertical-section-container centered">
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
       <h3>Basic data-scalars demo</h3>
       <demo-snippet>
         <template>
@@ -34,70 +164,11 @@
                   height: 18px;
                 }
               </style>
-              <div id="container">
-                <data-scalars id="ds1" name="a dropdown"></data-scalars>
-                <data-scalars id="ds2" name="an error" disabled="true"></data-scalars>
-                <data-scalars id="ds3" name="an editable"></data-scalars>
-                <data-scalars id="ds4" name="an editable checkbox"></data-scalars>
-                <data-scalars id="ds5" name="A financial number"></data-scalars>
-                <button id="buttonEditable">Toggle editable</button>
-                <button id="buttonSubmit">Submit</button>
-              </div>
-              <script>
-
-                ds1.data = Immutable.fromJS({
-                  value: "This is a dropdown field",
-                  schema: {
-                    type: "dropdown",
-                    suggestions: [
-                      {label: "label1", value: "value1"}, {label: "label2", value: "value2"}
-                    ]
-                  }
-                });
-                ds2.data = Immutable.fromJS({
-                  value: "A field with an error",
-                  schema: {type: "text"},
-                  error: "There is an mistake"
-                });
-                ds3.data = Immutable.fromJS({
-                  value: "2018-10-25T00:00",
-                  schema: {type: "date"}
-                });
-                ds4.data = Immutable.fromJS({
-                  value: "true",
-                  schema: {type: "checkbox", style: (d) => {
-                    var data = d.toJS();
-                    if(data.value == "true"){
-                      return "color: yellowgreen";
-                    }
-                  }}
-                });
-                ds5.data = Immutable.fromJS({
-                  value: 1000,
-                  schema: {type: "number", variant: "financial-locale"}
-                })
-
-                var elems = [ds1, ds2, ds3, ds4, ds5];
-                buttonEditable.addEventListener('click', () => {
-                  elems.forEach( (el) => {el.editing = !el.editing});
-                });
-                buttonSubmit.addEventListener('click', (e) => {
-                  elems.forEach( (el, i) => {
-                    var name = el.name;
-                    var value = el.getValue();
-                    var newValue = el.newValue;
-                    if(newValue != undefined) {
-                      console.log(`Value of '${el.name}' -> oldValue: "${value}", newValue: "${newValue}"`);
-                      el.data = el.data.set("value", newValue);
-                    }
-                  });
-                  buttonEditable.click();
-                });
-              </script>
             </template>
           </dom-bind>
         </template>
       </demo-snippet>
-    </div>
-  </body>
-</html>
+    </div>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
