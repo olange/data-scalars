@@ -49,7 +49,7 @@ document.head.appendChild($_documentContainer.content);
  * @polymer
  * @demo demo/index.html
  */
-class DataScalars extends PolymerElement {
+let DataScalars = class DataScalars extends PolymerElement {
   static get template() {
     return html`
     <style>
@@ -790,3 +790,5 @@ class DataScalars extends PolymerElement {
   }
 }
 window.customElements.define(DataScalars.is, DataScalars);
+
+export default DataScalars
