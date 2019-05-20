@@ -26,20 +26,20 @@
     "type-detect": "1.0.0"
   },
   "dependencies": {
-    "@polymer/iron-icon": "^3.0.0",
-    "@polymer/iron-input": "^3.0.0",
-    "@polymer/polymer": "^3.0.0",
-    "@vaadin/vaadin-combo-box": "^4.2.8",
+    "@polymer/iron-icon": "^3.0.1",
+    "@polymer/iron-input": "^3.0.1",
+    "@polymer/polymer": "^3.2.0",
+    "@vaadin/vaadin-combo-box": "^5.0.1",
     "flag-cc": "yveslange/flag-cc#migration-polymer-3",
     "immutable": "4.0.0-rc.12"
   },
   "devDependencies": {
-    "@commitlint/cli": "^7.5.2",
+    "@commitlint/cli": "^7.6.1",
     "@commitlint/config-conventional": "^7.5.0",
     "@polymer/iron-demo-helpers": "^3.1.0",
     "@polymer/iron-component-page": "^4.0.1",
     "@polymer/test-fixture": "^4.0.2",
-    "@webcomponents/webcomponentsjs": "^2.2.7",
+    "@webcomponents/webcomponentsjs": "^2.2.9",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "wct-mocha": "^1.0.0"
