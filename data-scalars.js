@@ -617,7 +617,7 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   /** Returns the schema decimals information */
   _getDecimals(data) {
-    if(data && data.get("schema") && data.get("schema").get("decimals")){
+    if(data && data.get("schema") && data.get("schema").get("decimals") != undefined){
       return data.get("schema").get("decimals");
     } else {
       return undefined;
