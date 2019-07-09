@@ -5,11 +5,146 @@ Automatic representation of a scalar value as Polymer Elements (Iron and Paper) 
 
 Designed to work hand-in-hand with data nuggets data structures delivered by ‹data-pipes›, although both can be used independently.
 
-Example of usage:
+### Example of usage:
 
-  <data-scalars data="{{dataEgg}}"></data-scalars>
+```
+<data-scalars data="{{dataEgg}}"></data-scalars>
+```
 
-  Immutable JS is not compatible :(
+### Example of dataEgg:
+
+```
+let dataEgg = {
+  data: { …someData… },
+  schema: {
+    type: 'number',
+    variant: 'financial',
+    …
+  },
+  error: "An error message"
+}
+
+```
+
+### Schema
+The schema let you customize the look and feel of the scalar. Here is a basic
+example of schema:
+
+```
+let schema = {
+  name: "My column field 1",
+  type: "text"
+}
+```
+
+### Schema fields
+Here are all the fields that can be used in the schema:
+
+- **name**: The name of the scalar to be displayed when the value is empty.
+- **type**: The type of the scalar. Check the `Types` section for more
+  information (default: `text`)
+- **variant**: The variant type. Please check the `Variants`
+  section for more information (default `default`)
+- **disabled**: If set to true, the scalar edition mode is disabled.
+  This will prevent the user from editing the value (default: `false`).
+- **suggestions**: Used when the type is `dropdown`, `icon` or `text` (default:
+  `undefined`). Check the `Types` section for more information.
+- **style**: The CSS style of the scalar. It can also either an object or a
+  function. Please check the `Styling` section for more information.
+- **decimal**: the number of decimals in case the type is `number` and the
+  `variant` is either `percentage` or `financial` (default: `2`).
+
+### Types
+The type (by default it is `text`) field tells this module how to present the
+data. The type can be one of those:
+
+- **text**: a simple string. You can use the `suggestions` field to replace some
+  matching text, eg:
+```
+suggestions: {
+    "a value": "by another", // will replace `a value` with `by another`
+    "cat": "dog"             // will replace `cat` by `dog`
+}
+```
+- **number**: an integer or decimal number
+- **dropdown**: a dropdown letting you search and select a single value in
+  editable mode. The `suggestions` field should be filled:
+```
+suggestions: [
+    {label: "Choice 1", value: 1},{label: "Choice 2", value: 2}, … ]
+```
+- **date**: a date that can be choose from a date-picker in editable mode
+- **datetime-local**: as for date but with the time
+- **timestamp**: a unix timestamp that will be converted to a datetime-local
+- **boolean**: a true or false value
+- **icon**: an icon from your iconset.
+
+### Example of how to use icons
+```
+type: 'icon',
+suggestions: [
+    {label: "Submitted", value: "your-iconset:check"},
+    {label: "IsPending", value: "your-iconset:refresh"},
+]
+```
+
+Your iconset using ‹iron-iconset-svg›:
+```
+<iron-iconset-svg size="24" name="your-iconset">
+  <svg><defs>
+  <g id="add"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path></g>
+  <g id="menu"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></g>
+  <g id="more-vert"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-   ...>
+
+  <!-- More SVG icons here -->
+
+</iron-iconset-svg>
+```
+
+### Variants
+Some types such as `text` and `icon` has some available variants that can be
+used. Here are the variants for each types:
+
+- **number**
+    - **financial**: convert a number (eg: `1000`) to a financial number (eg:
+      `1'000.00`). The number of decimals can be set using the decimal field of
+      the schema.
+    - **financial-locale**: same as of `financial` variant but apply the locale
+      format (eg: in the use 10000 will be converted to `10,000.00` while for
+      Switzerland it will be `10'000.00`).
+    - **percentage**: converts a floating value (eg: `0.04`) to its
+      corresponding percentage value (eg: `4%`). The number of decimals can be
+      set using the decimal field of the schema.
+- **icon**:
+    - **flag** will automatically convert the currency/country code to a flag
+      (eg: `CH` value will be converted to the Swiss flag)
+
+### Styling
+There are three ways to style a data scalar:
+
+- Style the cells of the column statically:
+```
+"style": "background-color: indianred"
+```
+- Style the cells by matching the text content:
+```
+"style": {
+    "matching text": "background-color: orange",
+    "other text": "background-color: yellowgreen"
+}
+```
+
+### Errors
+
+Specifying an error will add a background-color to the input and will display the
+message content when hovering it with the mouse.
+
+
+### TODO
+
+- [ ] Explain how to correctly style a data-scalar
+- [ ] Check to bring back immutability
+
 */
 
 import { PolymerElement } from '@polymer/polymer/polymer-element.js';
