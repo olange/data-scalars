@@ -147,14 +147,14 @@ message content when hovering it with the mouse.
 
 */
 
-import { PolymerElement } from '@polymer/polymer/polymer-element.js';
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+import { PolymerElement } from "@polymer/polymer/polymer-element.js";
+import { html } from "@polymer/polymer/lib/utils/html-tag.js";
 
-import '@polymer/iron-input/iron-input.js';
-import '@vaadin/vaadin-combo-box/vaadin-combo-box-light.js';
-import 'flag-cc/flag-cc.js';
+import "@polymer/iron-input/iron-input.js";
+import "@vaadin/vaadin-combo-box/vaadin-combo-box-light.js";
+import "flag-cc/flag-cc.js";
 
-const $_documentContainer = document.createElement('template');
+const $_documentContainer = document.createElement("template");
 
 $_documentContainer.innerHTML = `<dom-module id="custom-vaadin-combo-box-item" theme-for="vaadin-combo-box-item">
   <template>
@@ -257,8 +257,8 @@ let DataScalars = class DataScalars extends PolymerElement {
         }
 
         /** Turn off input[type=number] arrows/spiner */
-        input[type='number']::-webkit-inner-spin-button,
-        input[type='number']::-webkit-outer-spin-button {
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
           -webkit-appearance: none;
         }
 
@@ -447,7 +447,7 @@ let DataScalars = class DataScalars extends PolymerElement {
   }
 
   static get is() {
-    return 'data-scalars';
+    return "data-scalars";
   }
   static get properties() {
     return {
@@ -474,12 +474,12 @@ let DataScalars = class DataScalars extends PolymerElement {
        */
       data: {
         type: Object,
-        notify: true,
+        notify: true
       },
 
       /* Name of the data-scalar */
       name: {
-        type: String,
+        type: String
       },
 
       /** Defines if the data-scalar is in editing mode or not */
@@ -487,13 +487,13 @@ let DataScalars = class DataScalars extends PolymerElement {
         type: Boolean,
         notify: true,
         value: false,
-        reflectToAttribute: true,
+        reflectToAttribute: true
       },
 
       /** The new value that is set while editing */
       newValue: {
         type: String,
-        notify: true,
+        notify: true
       },
 
       /**
@@ -503,32 +503,32 @@ let DataScalars = class DataScalars extends PolymerElement {
       disabled: {
         type: Boolean,
         notify: true,
-        reflectToAttribute: true,
+        reflectToAttribute: true
       },
       _disabled: {
         type: Boolean,
         notify: true,
-        observer: '_disabledChanged',
-        computed: '_computeDisabled(data, disabled)',
+        observer: "_disabledChanged",
+        computed: "_computeDisabled(data, disabled)"
       },
 
       /** Placeholder for the field */
       placeholder: {
-        type: String,
+        type: String
       },
 
       /** Internal computed element type */
       _elementType: {
         type: String,
-        value: 'text',
-        computed: '_computeElementType(data)',
+        value: "text",
+        computed: "_computeElementType(data)"
       },
 
       /** Internal computed element variant type */
       _elementVariant: {
         type: String,
-        value: 'default',
-        computed: '_computeElementVariant(data)',
+        value: "default",
+        computed: "_computeElementVariant(data)"
       },
 
       /**
@@ -538,7 +538,7 @@ let DataScalars = class DataScalars extends PolymerElement {
       _allowCustomValue: {
         type: Boolean,
         value: true,
-        computed: '_computeAllowCustomValue(_elementType, _elementVariant)',
+        computed: "_computeAllowCustomValue(_elementType, _elementVariant)"
       },
 
       /**
@@ -547,7 +547,7 @@ let DataScalars = class DataScalars extends PolymerElement {
        */
       _suggestions: {
         type: Array,
-        computed: '_computeSuggestions( data)',
+        computed: "_computeSuggestions( data)"
       },
 
       /**
@@ -556,32 +556,32 @@ let DataScalars = class DataScalars extends PolymerElement {
        */
       _suggestionsByLabel: {
         type: Object,
-        computed: '_computeSuggestionsByLabel( _suggestions)',
+        computed: "_computeSuggestionsByLabel( _suggestions)"
       },
 
       /** Internal computed value */
       _value: {
         type: String,
-        computed: '_computeValue( data)',
+        computed: "_computeValue( data)"
       },
 
       /** Internal computed tooltip title */
       _title: {
         type: String,
-        computed: '_computeTitle(data, title)',
+        computed: "_computeTitle(data, title)"
       },
 
       __previousOnChangeValue: {
         type: String,
-        value: '',
+        value: ""
       },
 
       _dropdownSelectedItem: {
         type: Object,
-        observer: '_dropdownSelectedItemChanged',
+        observer: "_dropdownSelectedItemChanged"
       },
 
-      metaData: Object,
+      metaData: Object
     };
   }
 
@@ -594,11 +594,11 @@ let DataScalars = class DataScalars extends PolymerElement {
     if (!data) {
       return;
     }
-    var value = data.get('value');
+    var value = data.get("value");
 
     // Translate undefined to empty string
     if (value == undefined) {
-      value = '';
+      value = "";
     }
 
     this._forceValue(value);
@@ -611,8 +611,8 @@ let DataScalars = class DataScalars extends PolymerElement {
     if (disabled != undefined) {
       return disabled;
     }
-    if (data.get('schema')) {
-      return data.get('schema').get('disabled') || false;
+    if (data.get("schema")) {
+      return data.get("schema").get("disabled") || false;
     }
     return false;
   }
@@ -622,10 +622,10 @@ let DataScalars = class DataScalars extends PolymerElement {
     if (!data) {
       return;
     }
-    if (data.get('schema') && data.get('schema').get('suggestions')) {
+    if (data.get("schema") && data.get("schema").get("suggestions")) {
       return data
-        .get('schema')
-        .get('suggestions')
+        .get("schema")
+        .get("suggestions")
         .toJS();
     }
   }
@@ -634,7 +634,7 @@ let DataScalars = class DataScalars extends PolymerElement {
   _computeSuggestionsByLabel(_suggestions) {
     var result = {};
     if (_suggestions) {
-      _suggestions.forEach((sug) => {
+      _suggestions.forEach(sug => {
         result[sug.label] = sug.value;
       });
     }
@@ -652,10 +652,10 @@ let DataScalars = class DataScalars extends PolymerElement {
     if (!data) {
       return undefined;
     }
-    if (!data.get('error')) {
-      return data.get('value');
+    if (!data.get("error")) {
+      return data.get("value");
     }
-    return 'Error: ' + data.get('error');
+    return "Error: " + data.get("error");
   }
 
   /** Computes the element type from the schema */
@@ -669,7 +669,7 @@ let DataScalars = class DataScalars extends PolymerElement {
   }
 
   _computeAllowCustomValue(type, variant) {
-    return type == 'dropdown' && variant != 'no-custom-value' ? true : false;
+    return type == "dropdown" && variant != "no-custom-value" ? true : false;
   }
 
   /** Helpers */
@@ -690,7 +690,7 @@ let DataScalars = class DataScalars extends PolymerElement {
     var type = this._getType(this.data);
     var scalar = this.$.scalar;
     if (scalar) {
-      var input = scalar.querySelector('.input');
+      var input = scalar.querySelector(".input");
       if (input) {
         input.value = value;
       }
@@ -700,11 +700,11 @@ let DataScalars = class DataScalars extends PolymerElement {
     // Make sure to detect futher changes. Reseting previous change.
     // TODO: this should be in an observer when the `editing` attribute
     // changes.
-    if (type == 'dropdown') {
+    if (type == "dropdown") {
       // this is because the default vaadin value is an empty string instead of undefined.
       // Thus, going to the 'edit' mode will trigger a change from undefined to empty string.
       // We do not want to trigger the initial on-change event.
-      this.__previousOnChangeValue = '';
+      this.__previousOnChangeValue = "";
     } else {
       this.__previousOnChangeValue = undefined;
     }
@@ -712,18 +712,18 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   /** If there is an error, the `error` class is returned to the input field */
   _getErrorClass(data) {
-    if (!data || !data.get('error')) {
+    if (!data || !data.get("error")) {
       return;
     }
-    if (data.get('error')) {
-      return 'error';
+    if (data.get("error")) {
+      return "error";
     }
   }
 
   /** Dispatch the 'change' event with the name and value of the component */
   _dispatchChangeEvent(value) {
-    var event = new CustomEvent('change', {
-      detail: { name: this.name, value: value },
+    var event = new CustomEvent("change", {
+      detail: { name: this.name, value: value }
     });
     this.dispatchEvent(event);
   }
@@ -735,8 +735,8 @@ let DataScalars = class DataScalars extends PolymerElement {
    */
   _onChange(e) {
     var value = e.currentTarget.value;
-    if (e.currentTarget.type == 'datetime-local') {
-      value = value.replace('T', ' ');
+    if (e.currentTarget.type == "datetime-local") {
+      value = value.replace("T", " ");
     }
 
     // We need to make sure that the onChange was triggered twice.
@@ -770,10 +770,10 @@ let DataScalars = class DataScalars extends PolymerElement {
     if (e.ctrlKey && e.keyCode == 13) {
       e.stopPropagation();
       e.preventDefault();
-      var event = new Event('validate');
+      var event = new Event("validate");
       this.dispatchEvent(event);
-    } else if (e.code == 'Escape') {
-      var event = new Event('cancel');
+    } else if (e.code == "Escape") {
+      var event = new Event("cancel");
       this.dispatchEvent(event);
     }
   }
@@ -782,10 +782,10 @@ let DataScalars = class DataScalars extends PolymerElement {
   _onTick(e) {
     var elem = e.currentTarget;
     var value = elem.options[elem.selectedIndex].value;
-    var checked = '';
-    if (value == 'true') {
+    var checked = "";
+    if (value == "true") {
       checked = true;
-    } else if (value == 'false') {
+    } else if (value == "false") {
       checked = false;
     }
     this._dispatchChangeEvent(checked);
@@ -794,49 +794,49 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   /** Retrieves the type from the schema */
   _getType(data) {
-    if (data && data.get('schema') && data.get('schema').get('type')) {
+    if (data && data.get("schema") && data.get("schema").get("type")) {
       return data
-        .get('schema')
-        .get('type')
+        .get("schema")
+        .get("type")
         .toLowerCase();
     } else {
-      return 'text';
+      return "text";
     }
   }
 
   /** Retrieves the style from the schema */
   _getStyle(data, metaData) {
-    if (data && data.get('schema') && data.get('schema').get('style')) {
-      var style = data.get('schema').get('style');
-      if (typeof style === 'function') {
+    if (data && data.get("schema") && data.get("schema").get("style")) {
+      var style = data.get("schema").get("style");
+      if (typeof style === "function") {
         style = style(data, metaData);
       }
       return style;
     } else {
-      return '';
+      return "";
     }
   }
 
   /** Return the parsed HTML date type */
   _parseHTMLDateType(data) {
     var type = this._getType(data);
-    if (type == 'date') {
-      return 'date';
-    } else if (['datetime', 'datetime-local', 'timestamp'].indexOf(type) > -1) {
-      return 'datetime-local';
+    if (type == "date") {
+      return "date";
+    } else if (["datetime", "datetime-local", "timestamp"].indexOf(type) > -1) {
+      return "datetime-local";
     }
-    return 'text';
+    return "text";
   }
 
   /** Returns the schema type variant */
   _getVariant(data) {
-    if (data && data.get('schema') && data.get('schema').get('variant')) {
+    if (data && data.get("schema") && data.get("schema").get("variant")) {
       return data
-        .get('schema')
-        .get('variant')
+        .get("schema")
+        .get("variant")
         .toLowerCase();
     } else {
-      return 'default';
+      return "default";
     }
   }
 
@@ -844,10 +844,10 @@ let DataScalars = class DataScalars extends PolymerElement {
   _getDecimals(data) {
     if (
       data &&
-      data.get('schema') &&
-      data.get('schema').get('decimals') != undefined
+      data.get("schema") &&
+      data.get("schema").get("decimals") != undefined
     ) {
-      return data.get('schema').get('decimals');
+      return data.get("schema").get("decimals");
     } else {
       return undefined;
     }
@@ -859,7 +859,7 @@ let DataScalars = class DataScalars extends PolymerElement {
    * to present the data value.
    */
   _isDataOfTypePrimitive(data) {
-    var primitiveTypes = ['text', 'number'];
+    var primitiveTypes = ["text", "number"];
     var type = this._getType(data);
     if (type) {
       return primitiveTypes.indexOf(type) > -1;
@@ -870,7 +870,7 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   /** Returns true if the data type is a `date` type */
   _isDataOfTypeDate(data) {
-    var dateTypes = ['date', 'datetime', 'datetime-local', 'timestamp'];
+    var dateTypes = ["date", "datetime", "datetime-local", "timestamp"];
     var type = this._getType(data);
     return dateTypes.indexOf(type) > -1;
   }
@@ -881,14 +881,14 @@ let DataScalars = class DataScalars extends PolymerElement {
    */
   _isDataOfType(data, typeToCheck) {
     var type = this._getType(data);
-    if (['bool', 'checkbox', 'boolean'].indexOf(type) > -1) {
-      type = 'checkbox';
+    if (["bool", "checkbox", "boolean"].indexOf(type) > -1) {
+      type = "checkbox";
     }
 
     if (type) {
       return type == typeToCheck;
     } else {
-      return typeToCheck == 'text';
+      return typeToCheck == "text";
     }
   }
 
@@ -897,7 +897,7 @@ let DataScalars = class DataScalars extends PolymerElement {
    */
   _shouldShowValue(data) {
     var type = this._getType(data);
-    if (type != 'icon') {
+    if (type != "icon") {
       return true;
     }
     return false;
@@ -921,25 +921,25 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   _formatValue(data, _value, _suggestions) {
     let value = this._getLabelFromValue(_suggestions, _value);
-    if (value === undefined || value === null || value == '') {
-      return '';
+    if (value === undefined || value === null || value == "") {
+      return "";
     }
     let type = this._getType(data);
     let variant = this._getVariant(data);
-    if (type == 'number') {
+    if (type == "number") {
       let decimals = this._getDecimals(data);
       switch (variant) {
-        case 'financial':
+        case "financial":
           return this._financialNumber(value, decimals);
-        case 'financial-locale':
+        case "financial-locale":
           return this._financialNumber(value, decimals, true);
-        case 'percentage':
+        case "percentage":
           return this._percentageNumber(value, decimals);
         default:
-          return value;
+          return decimals !== undefined ? value.toFixed(decimals) : value;
       }
     } else if (
-      ['date', 'datetime-local', 'timestamp'].indexOf(type) > -1 &&
+      ["date", "datetime-local", "timestamp"].indexOf(type) > -1 &&
       _value
     ) {
       return this._formatDatetime(data, _value);
@@ -948,31 +948,31 @@ let DataScalars = class DataScalars extends PolymerElement {
   }
 
   _formatDatetime(data, _value, html = false) {
-    let string = '';
+    let string = "";
     if (_value) {
       let type = this._getType(data);
       let date = new Date(_value);
-      let month = date.getMonth() + 1 + '';
-      month = month.length > 1 ? month : '0' + month;
+      let month = date.getMonth() + 1 + "";
+      month = month.length > 1 ? month : "0" + month;
       let day =
-        (date.getDate() + '').length > 1
+        (date.getDate() + "").length > 1
           ? date.getDate()
-          : '0' + date.getDate();
+          : "0" + date.getDate();
       var year = date.getFullYear();
       var hours =
-        (date.getHours() + '').length > 1
+        (date.getHours() + "").length > 1
           ? date.getHours()
-          : '0' + date.getHours();
+          : "0" + date.getHours();
       var minutes =
-        (date.getMinutes() + '').length > 1
+        (date.getMinutes() + "").length > 1
           ? date.getMinutes()
-          : '0' + date.getMinutes();
+          : "0" + date.getMinutes();
       string = html
-        ? year + '-' + month + '-' + day
-        : day + '.' + month + '.' + year;
-      if (type != 'date') {
-        string += html ? 'T' : ' ';
-        string += hours + ':' + minutes;
+        ? year + "-" + month + "-" + day
+        : day + "." + month + "." + year;
+      if (type != "date") {
+        string += html ? "T" : " ";
+        string += hours + ":" + minutes;
       }
     }
     return string;
@@ -983,17 +983,17 @@ let DataScalars = class DataScalars extends PolymerElement {
     if (isLocale) {
       return x.toLocaleString(undefined, { minimumFractionDigits: decimals });
     }
-    var parts = x.toString().split('.');
+    var parts = x.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
     parts[1] =
-      parseFloat('0.' + parts[1])
+      parseFloat("0." + parts[1])
         .toFixed(decimals)
-        .split('.')[1] || '00';
-    return parts.join('.');
+        .split(".")[1] || "00";
+    return parts.join(".");
   }
 
   _percentageNumber(x, decimals = 2) {
-    return (parseFloat(x) * 100).toFixed(decimals) + ' %';
+    return (parseFloat(x) * 100).toFixed(decimals) + " %";
   }
 
   __equals(a, b) {
@@ -1007,7 +1007,7 @@ let DataScalars = class DataScalars extends PolymerElement {
   _getLabelFromValue(_suggestions, _value) {
     var label = _value;
     if (_suggestions) {
-      _suggestions.forEach((s) => {
+      _suggestions.forEach(s => {
         if (s.value == _value) {
           label = s.label;
         }
@@ -1018,27 +1018,27 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   _getTextStyle(data, metaData, _value) {
     if (_value == undefined) {
-      return '';
+      return "";
     }
     var style = this._getStyle(data, metaData);
     var type = this._getType(data);
     var variant = this._getVariant(data);
     if (
-      type == 'number' &&
-      ['financial', 'financial-locale'].indexOf(variant) > -1
+      type == "number" &&
+      ["financial", "financial-locale"].indexOf(variant) > -1
     ) {
       if (_value > 0) {
-        style = 'color: yellowgreen;' + style;
+        style = "color: yellowgreen;" + style;
       } else if (_value < 0) {
-        style = 'color: indianred;' + style;
+        style = "color: indianred;" + style;
       }
     }
     return style;
   }
 
   empty() {
-    this.data = this.data.set('value', '');
-    this._forceValue('');
+    this.data = this.data.set("value", "");
+    this._forceValue("");
   }
 
   getValue() {
