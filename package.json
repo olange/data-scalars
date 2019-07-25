@@ -6,7 +6,7 @@
   },
   "homepage": "https://github.com/olange/data-scalars#readme",
   "name": "data-scalars",
-  "version": "2.4.0",
+  "version": "3.0.1",
   "main": "index.js",
   "directories": {
     "test": "test"
