@@ -770,19 +770,19 @@ let DataScalars = class DataScalars extends PolymerElement {
     if (e.ctrlKey && e.keyCode == 13) {
       e.stopPropagation();
       e.preventDefault();
-      var event = new Event("validate");
+      let event = new Event("validate");
       this.dispatchEvent(event);
     } else if (e.code == "Escape") {
-      var event = new Event("cancel");
+      let event = new Event("cancel");
       this.dispatchEvent(event);
     }
   }
 
   /** Dispatch a custom event 'change' when the checkbox attribut has changed */
   _onTick(e) {
-    var elem = e.currentTarget;
-    var value = elem.options[elem.selectedIndex].value;
-    var checked = "";
+    let elem = e.currentTarget;
+    let value = elem.options[elem.selectedIndex].value;
+    let checked = "";
     if (value == "true") {
       checked = true;
     } else if (value == "false") {
@@ -807,7 +807,7 @@ let DataScalars = class DataScalars extends PolymerElement {
   /** Retrieves the style from the schema */
   _getStyle(data, metaData) {
     if (data && data.get("schema") && data.get("schema").get("style")) {
-      var style = data.get("schema").get("style");
+      let style = data.get("schema").get("style");
       if (typeof style === "function") {
         style = style(data, metaData);
       }
@@ -819,7 +819,7 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   /** Return the parsed HTML date type */
   _parseHTMLDateType(data) {
-    var type = this._getType(data);
+    let type = this._getType(data);
     if (type == "date") {
       return "date";
     } else if (["datetime", "datetime-local", "timestamp"].indexOf(type) > -1) {
@@ -921,7 +921,7 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   _formatValue(data, _value, _suggestions) {
     let value = this._getLabelFromValue(_suggestions, _value);
-    if (value === undefined || value === null || value == "") {
+    if (value === undefined || value === null || value === "") {
       return "";
     }
     let type = this._getType(data);
