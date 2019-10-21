@@ -202,7 +202,7 @@ let DataScalars = class DataScalars extends PolymerElement {
           position: relative;
           box-sizing: border-box;
           align-items: center;
-          padding: var(--padding, 0);
+          padding: var(--data-scalar-padding, 0);
           min-height: 18px;
         }
 
