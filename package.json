@@ -6,7 +6,7 @@
   },
   "homepage": "https://github.com/olange/data-scalars#readme",
   "name": "data-scalars",
-  "version": "3.0.1",
+  "version": "3.0.3",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -24,7 +24,7 @@
     "@polymer/iron-input": "^3.0.1",
     "@polymer/polymer": "^3.2.0",
     "@vaadin/vaadin-combo-box": "^5.0.1",
-    "flag-cc": "yveslange/flag-cc#v0.0.13",
+    "flag-cc": "yveslange/flag-cc#v0.0.14",
     "immutable": "4.0.0-rc.12"
   },
   "devDependencies": {
