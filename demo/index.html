@@ -30,7 +30,7 @@
     <div class="polymer-demo vertical-section-container centered">
       <h1 id="data-scalars">‹data-scalars›</h1>
       <div class="polymer-description">
-        <code>‹data-scalars›</code> TODO.
+        <code>‹data-scalars›</code> generate the correct scalar editable input according to a schema (check the documentation for more information).
         <br><br>
         <div class="polymer-info">
           See:
@@ -41,12 +41,19 @@
       <br>
       <demo-snippet>
         <template>
+          <style>
+            data-scalars {
+              --padding: 5px;
+            }
+          </style>
           <div id="container">
-            <data-scalars id="ds1" name="a dropdown"></data-scalars>
-            <data-scalars id="ds2" name="an error" disabled="true"></data-scalars>
-            <data-scalars id="ds3" name="an editable"></data-scalars>
-            <data-scalars id="ds4" name="an editable checkbox"></data-scalars>
-            <data-scalars id="ds5" name="A financial number"></data-scalars>
+            <data-scalars id="ds1" name="dropdown"></data-scalars>
+            <data-scalars id="ds2" name="error" disabled="true"></data-scalars>
+            <data-scalars id="ds3" name="editable"></data-scalars>
+            <data-scalars id="ds4" name="editable checkbox"></data-scalars>
+            <data-scalars id="ds5" name="financial number"></data-scalars>
+            <data-scalars id="ds6" name="currencies"></data-scalars>
+            <data-scalars id="ds7" name="flag"></data-scalars>
             <button id="buttonEditable">Toggle editable</button>
             <button id="buttonSubmit">Submit</button>
           </div>
@@ -82,8 +89,26 @@
               value: 1000,
               schema: {type: "number", variant: "financial-locale"}
             })
+            ds6.data = Immutable.fromJS({
+              value: "CHF",
+              schema: {
+                key: "currency",
+                type: "dropdown",
+                suggestions: [
+                  {label: "Swiss Franc", value: "CHF"}, {label: "Euro", value: "EUR"}
+                ]
+              }
+            })
+            ds7.data = Immutable.fromJS({
+              value: "CHF",
+              schema: {
+                type: "icon",
+                variant: "flag",
+                disabled: true
+              }
+            })
 
-            let elems = [ds1, ds2, ds3, ds4, ds5];
+            let elems = [ds1, ds2, ds3, ds4, ds5, ds6];
             let editing = false;
 
             buttonEditable.addEventListener('click', () => {
@@ -94,13 +119,21 @@
             buttonSubmit.addEventListener('click', (e) => {
               let hasNewValues = false;
               elems.forEach( (el, i) => {
-                var name = el.name;
-                var value = el.getValue();
-                var newValue = el.newValue;
+                let name = el.name;
+                let value = el.getValue();
+                let newValue = el.newValue;
                 if(newValue != undefined) {
                   hasNewValues = true;
                   console.log(`Value of '${el.name}' -> oldValue: "${value}", newValue: "${newValue}"`);
                   el.data = el.data.set("value", newValue);
+                }
+
+                // Dynamically updating the flag when a new currency is selected
+                if(name == "currencies"){
+                  console.warn("The currency change triggered an update of the flag")
+                  let data7 = ds7.data.toJS();
+                  data7.value = newValue;
+                  ds7.data = Immutable.fromJS(data7);
                 }
               });
               if(editing){

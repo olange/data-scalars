@@ -191,7 +191,6 @@ let DataScalars = class DataScalars extends PolymerElement {
         :host {
           display: flex;
           flex-direction: row;
-          padding: 0px;
         }
 
         div.content {
@@ -203,6 +202,8 @@ let DataScalars = class DataScalars extends PolymerElement {
           position: relative;
           box-sizing: border-box;
           align-items: center;
+          padding: var(--padding, 0);
+          min-height: 18px;
         }
 
         div.content[editing] {
@@ -231,12 +232,12 @@ let DataScalars = class DataScalars extends PolymerElement {
         input,
         iron-input,
         vaadin-combo-box-light {
+          padding: 0px;
           color: inherit;
           font-family: inherit;
           width: 100%;
           font-weight: inherit;
           font-size: inherit;
-          padding: 0px;
           display: flex;
           border: none;
           box-sizing: border-box;
@@ -250,6 +251,15 @@ let DataScalars = class DataScalars extends PolymerElement {
           -moz-appearance: none;
           appearance: none;
           padding: 0px;
+        }
+
+        /**
+         * Hack to fix the height of the date display. For whatever reason the
+         * <input type=date> has a height of 18px, so to avoid flickering when
+         * toggling the editing mode, we set the display to be the same size.
+         */
+        div.element.date {
+          min-height: 18px;
         }
 
         vaadin-combo-box-light {
@@ -302,17 +312,17 @@ let DataScalars = class DataScalars extends PolymerElement {
       </style>
       <div
         id="scalar"
-        class\$="content [[_getErrorClass(data)]]"
-        editing\$="[[editing]]"
-        disabled\$="[[_disabled]]"
+        class$="content [[_getErrorClass(data)]]"
+        editing$="[[editing]]"
+        disabled$="[[_disabled]]"
         title="[[_title]]"
       >
         <!-- Icon -->
         <template is="dom-if" if="[[_isDataOfType(data, 'icon')]]">
           <template is="dom-if" if="[[editing]]">
             <input
-              class\$="input element [[_elementType]] [[_elementVariant]]"
-              value\$="[[_value]]"
+              class$="input element [[_elementType]] [[_elementVariant]]"
+              value$="[[_value]]"
               title="[[_title]]"
               disabled="[[_disabled]]"
               placeholder="[[placeholder]]"
@@ -324,7 +334,7 @@ let DataScalars = class DataScalars extends PolymerElement {
           <template is="dom-if" if="[[!editing]]">
             <template is="dom-if" if="[[__equals(_elementVariant, 'default')]]">
               <iron-icon
-                icon\$="[[_getIconName(_suggestionsByLabel, _value)]]"
+                icon$="[[_getIconName(_suggestionsByLabel, _value)]]"
               ></iron-icon>
             </template>
             <template is="dom-if" if="[[__equals(_elementVariant, 'flag')]]">
@@ -343,7 +353,7 @@ let DataScalars = class DataScalars extends PolymerElement {
             <div
               style="[[_getTextStyle(data, metaData, _value)]]"
               title="[[_computeTitle(data)]]"
-              class\$="element [[_elementType]] [[_elementVariant]]"
+              class$="element [[_elementType]] [[_elementVariant]]"
             >
               [[_formatValue(data, _value, _suggestions)]]
             </div>
@@ -356,9 +366,9 @@ let DataScalars = class DataScalars extends PolymerElement {
           <template is="dom-if" if="[[_isDataOfTypePrimitive(data)]]">
             <template is="dom-if" if="[[!_disabled]]">
               <input
-                class\$="input element [[_elementType]] [[_elementVariant]]"
-                type\$="[[_getType(data)]]"
-                value\$="[[_value]]"
+                class$="input element [[_elementType]] [[_elementVariant]]"
+                type$="[[_getType(data)]]"
+                value$="[[_value]]"
                 title="[[_title]]"
                 disabled="[[_disabled]]"
                 placeholder="[[placeholder]]"
@@ -376,9 +386,9 @@ let DataScalars = class DataScalars extends PolymerElement {
           <template is="dom-if" if="[[_isDataOfTypeDate(data)]]">
             <template is="dom-if" if="[[!_disabled]]">
               <input
-                class\$="input element [[_elementType]] [[_elementVariant]]"
-                type\$="[[_parseHTMLDateType(data)]]"
-                value\$="[[_formatDatetime(data, _value, 'true')]]"
+                class$="input element [[_elementType]] [[_elementVariant]]"
+                type$="[[_parseHTMLDateType(data)]]"
+                value$="[[_formatDatetime(data, _value, 'true')]]"
                 title="[[_title]]"
                 disabled="[[_disabled]]"
                 placeholder="[[placeholder]]"
@@ -396,7 +406,7 @@ let DataScalars = class DataScalars extends PolymerElement {
           <template is="dom-if" if="[[_isDataOfType(data, 'dropdown')]]">
             <template is="dom-if" if="[[!_disabled]]">
               <vaadin-combo-box-light
-                class\$="input element dropdown [[_elementType]] [[_elementVariant]]"
+                class$="input element dropdown [[_elementType]] [[_elementVariant]]"
                 placeholder="[[placeholder]]"
                 items="[[_suggestions]]"
                 value="[[_getLabelFromValue(_suggestions, _value)]]"
@@ -413,7 +423,7 @@ let DataScalars = class DataScalars extends PolymerElement {
                 <iron-input>
                   <input
                     placeholder="[[placeholder]]"
-                    disabled\$="[[_disabled]]"
+                    disabled$="[[_disabled]]"
                     on-keyup="_onKeyup"
                     on-keydown="_onKeydown"
                   />
@@ -426,7 +436,7 @@ let DataScalars = class DataScalars extends PolymerElement {
           <template is="dom-if" if="[[_isDataOfType(data, 'checkbox')]]">
             <template is="dom-if" if="[[!_disabled]]">
               <select
-                class\$="input element checkbox [[_elementType]] [[_elementVariant]]"
+                class$="input element checkbox [[_elementType]] [[_elementVariant]]"
                 disabled="[[_disabled]]"
                 on-change="_onTick"
                 value="[[_value]]"
