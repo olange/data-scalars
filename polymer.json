@@ -7,6 +7,9 @@
     "rules": [
       "polymer-3"
     ]
-  }
+  },
+  "extraDependencies": [
+    "node_modules/flag-cc/*.js",
+    "node_modules/flag-cc/flags/**/*"
+  ]
 }
-
