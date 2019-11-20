@@ -777,7 +777,7 @@ let DataScalars = class DataScalars extends PolymerElement {
    *     - Enter key will dispatch the 'validate' event
    */
   _onKeydown(e) {
-    if (e.ctrlKey && e.keyCode == 13) {
+    if (!e.ctrlKey && e.keyCode == 13) {
       e.stopPropagation();
       e.preventDefault();
       let event = new Event("validate");
