@@ -352,7 +352,7 @@ let DataScalars = class DataScalars extends PolymerElement {
           <template is="dom-if" if="[[!editing]]">
             <div
               style="[[_getTextStyle(data, metaData, _value)]]"
-              title="[[_computeTitle(data)]]"
+              title="[[_title]]"
               class$="element [[_elementType]] [[_elementVariant]]"
             >
               [[_formatValue(data, _value, _suggestions)]]
@@ -492,6 +492,16 @@ let DataScalars = class DataScalars extends PolymerElement {
         type: String
       },
 
+      title: String,
+      /** A custom function to compute the title tooltip. This overwrites the title */
+      tooltip: Function,
+      /** Internal computed tooltip title */
+      _title: {
+        type: String,
+        computed: "_computeTitle(data, name, title, tooltip)"
+      },
+
+
       /** Defines if the data-scalar is in editing mode or not */
       editing: {
         type: Boolean,
@@ -575,12 +585,6 @@ let DataScalars = class DataScalars extends PolymerElement {
         computed: "_computeValue( data)"
       },
 
-      /** Internal computed tooltip title */
-      _title: {
-        type: String,
-        computed: "_computeTitle(data, title)"
-      },
-
       __previousOnChangeValue: {
         type: String,
         value: ""
@@ -655,17 +659,20 @@ let DataScalars = class DataScalars extends PolymerElement {
    * Computes the title that is display when hovering a field. If there is a specific error
    * in the schema, the error will be shown.
    */
-  _computeTitle(data, title) {
-    if (title != undefined) {
+  _computeTitle(data, name, title, tooltip) {
+    if (!tooltip || title != undefined) {
       return title;
     }
     if (!data) {
       return undefined;
     }
-    if (!data.get("error")) {
-      return data.get("value");
+    if (tooltip) {
+      return tooltip(data, name);
     }
-    return "Error: " + data.get("error");
+    if (data.get("error")) {
+      return "Error: " + data.get("error");
+    }
+    return data.get("value");
   }
 
   /** Computes the element type from the schema */
