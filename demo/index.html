@@ -54,6 +54,7 @@
             <data-scalars id="ds5" name="financial number"></data-scalars>
             <data-scalars id="ds6" name="currencies"></data-scalars>
             <data-scalars id="ds7" name="flag"></data-scalars>
+            <data-scalars id="ds8" name="select"></data-scalars>
             <button id="buttonEditable">Toggle editable</button>
             <button id="buttonSubmit">Submit</button>
           </div>
@@ -107,8 +108,18 @@
                 disabled: true
               }
             })
+            ds8.data = Immutable.fromJS({
+              value: "item2",
+              schema: {
+                type: "select",
+                suggestions: [
+                  {label: "The item 1", value: "item1"}, {label: "The item 2", value: "item2"}
+                ],
+                placeholder: "Simple select"
+              }
+            })
 
-            let elems = [ds1, ds2, ds3, ds4, ds5, ds6];
+            let elems = [ds1, ds2, ds3, ds4, ds5, ds6, ds7, ds8];
             let editing = false;
 
             buttonEditable.addEventListener('click', () => {

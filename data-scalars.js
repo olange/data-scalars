@@ -78,6 +78,8 @@ suggestions: [
 - **timestamp**: a unix timestamp that will be converted to a datetime-local
 - **boolean**: a true or false value
 - **icon**: an icon from your iconset.
+- **select**: a simple select. The `suggestions` field should be
+  filled like for the dropdown type.
 
 ### Example of how to use icons
 ```
@@ -432,6 +434,24 @@ let DataScalars = class DataScalars extends PolymerElement {
             </template>
           </template>
 
+          <!-- Editing dropdown -->
+          <template is="dom-if" if="[[_isDataOfType(data, 'select')]]">
+            <template is="dom-if" if="[[!_disabled]]">
+              <select
+                class$="input element select [[_elementType]] [[_elementVariant]]"
+                placeholder="[[placeholder]]"
+                value$="[[_value]]"
+                disabled="[[_disabled]]"
+                on-change="_selectInputChanged"
+              >
+                <option value=""></option>
+                <template is="dom-repeat" items="{{_suggestions}}">
+                  <option value="[[item.value]]">[[item.label]]</option>
+                </template>
+              </select>
+            </template>
+          </template>
+
           <!-- Editing checkbox -->
           <template is="dom-if" if="[[_isDataOfType(data, 'checkbox')]]">
             <template is="dom-if" if="[[!_disabled]]">
@@ -500,7 +520,6 @@ let DataScalars = class DataScalars extends PolymerElement {
         type: String,
         computed: "_computeTitle(data, name, title, tooltip)"
       },
-
 
       /** Defines if the data-scalar is in editing mode or not */
       editing: {
@@ -599,6 +618,10 @@ let DataScalars = class DataScalars extends PolymerElement {
     };
   }
 
+  static get observers() {
+    return ["_valueChanged(_value, _elementType, editing)"];
+  }
+
   ready() {
     super.ready();
   }
@@ -608,7 +631,7 @@ let DataScalars = class DataScalars extends PolymerElement {
     if (!data) {
       return;
     }
-    var value = data.get("value");
+    let value = data.get("value");
 
     // Translate undefined to empty string
     if (value == undefined) {
@@ -646,7 +669,7 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   /** Computes the suggestions scrutured by 'label' */
   _computeSuggestionsByLabel(_suggestions) {
-    var result = {};
+    let result = {};
     if (_suggestions) {
       _suggestions.forEach(sug => {
         result[sug.label] = sug.value;
@@ -689,6 +712,21 @@ let DataScalars = class DataScalars extends PolymerElement {
     return type == "dropdown" && variant != "no-custom-value" ? true : false;
   }
 
+  /** OBSERVERS **/
+  _valueChanged(value, type, editing) {
+    if (type === "select") {
+      setTimeout(() => {
+        let input = this.$.scalar.querySelector(".input");
+        if (input && editing) {
+          let idx = Array.from(input.options).findIndex(item => {
+            return item.value == value;
+          });
+          input.selectedIndex = idx;
+        }
+      }, 100);
+    }
+  }
+
   /** Helpers */
 
   /** When `disabled` is changed, update the value to make sure it's correct in the input field */
@@ -704,10 +742,10 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   /* Make sure that the user edition is deleted and replaced by the default value */
   _forceValue(value) {
-    var type = this._getType(this.data);
-    var scalar = this.$.scalar;
+    let type = this._getType(this.data);
+    let scalar = this.$.scalar;
+    let input = scalar.querySelector(".input");
     if (scalar) {
-      var input = scalar.querySelector(".input");
       if (input) {
         input.value = value;
       }
@@ -716,9 +754,9 @@ let DataScalars = class DataScalars extends PolymerElement {
 
     // Make sure to detect futher changes. Reseting previous change.
     // TODO: this should be in an observer when the `editing` attribute
-    // changes.
+    // Changes.
     if (type == "dropdown") {
-      // this is because the default vaadin value is an empty string instead of undefined.
+      // This is because the default vaadin value is an empty string instead of undefined.
       // Thus, going to the 'edit' mode will trigger a change from undefined to empty string.
       // We do not want to trigger the initial on-change event.
       this.__previousOnChangeValue = "";
@@ -739,7 +777,7 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   /** Dispatch the 'change' event with the name and value of the component */
   _dispatchChangeEvent(value) {
-    var event = new CustomEvent("change", {
+    let event = new CustomEvent("change", {
       detail: { name: this.name, value: value }
     });
     this.dispatchEvent(event);
@@ -751,14 +789,14 @@ let DataScalars = class DataScalars extends PolymerElement {
    *   {'detail': {name: "the name", value: "the value"}}
    */
   _onChange(e) {
-    var value = e.currentTarget.value;
+    let value = e.currentTarget.value;
     if (e.currentTarget.type == "datetime-local") {
       value = value.replace("T", " ");
     }
 
     // We need to make sure that the onChange was triggered twice.
     // After the user has finished doing an edition, the event is resent
-    // to notify about the latest value.
+    // To notify about the latest value.
     if (this.__previousOnChangeValue != value) {
       this._dispatchChangeEvent(value);
       this.__previousOnChangeValue = value;
@@ -768,9 +806,13 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   _dropdownSelectedItemChanged(_dropdownSelectedItem) {
     if (_dropdownSelectedItem) {
-      var e = { currentTarget: { value: _dropdownSelectedItem.value } };
+      let e = { currentTarget: { value: _dropdownSelectedItem.value } };
       this._onChange(e);
     }
+  }
+
+  _selectInputChanged(e) {
+    this._onChange(e);
   }
 
   _onKeyup(e) {
@@ -876,8 +918,8 @@ let DataScalars = class DataScalars extends PolymerElement {
    * to present the data value.
    */
   _isDataOfTypePrimitive(data) {
-    var primitiveTypes = ["text", "number"];
-    var type = this._getType(data);
+    let primitiveTypes = ["text", "number"];
+    let type = this._getType(data);
     if (type) {
       return primitiveTypes.indexOf(type) > -1;
     } else {
@@ -887,8 +929,8 @@ let DataScalars = class DataScalars extends PolymerElement {
 
   /** Returns true if the data type is a `date` type */
   _isDataOfTypeDate(data) {
-    var dateTypes = ["date", "datetime", "datetime-local", "timestamp"];
-    var type = this._getType(data);
+    let dateTypes = ["date", "datetime", "datetime-local", "timestamp"];
+    let type = this._getType(data);
     return dateTypes.indexOf(type) > -1;
   }
 
@@ -897,7 +939,7 @@ let DataScalars = class DataScalars extends PolymerElement {
    * By default and if the type is not specified, it will return true as if `elType` == 'text'
    */
   _isDataOfType(data, typeToCheck) {
-    var type = this._getType(data);
+    let type = this._getType(data);
     if (["bool", "checkbox", "boolean"].indexOf(type) > -1) {
       type = "checkbox";
     }
@@ -913,7 +955,7 @@ let DataScalars = class DataScalars extends PolymerElement {
    * Should display the data value. Eg: the icon should not display its string
    */
   _shouldShowValue(data) {
-    var type = this._getType(data);
+    let type = this._getType(data);
     if (type != "icon") {
       return true;
     }
@@ -921,7 +963,7 @@ let DataScalars = class DataScalars extends PolymerElement {
   }
 
   _getIconName(_suggestionsByLabel, _value) {
-    var icon = _value;
+    let icon = _value;
     if (_suggestionsByLabel && _suggestionsByLabel[_value]) {
       icon = _suggestionsByLabel[_value];
     }
@@ -929,7 +971,7 @@ let DataScalars = class DataScalars extends PolymerElement {
   }
 
   _getFlagName(_suggestionsByLabel, _value) {
-    var flag = _value;
+    let flag = _value;
     if (_suggestionsByLabel && _suggestionsByLabel[_value]) {
       flag = _suggestionsByLabel[_value];
     }
@@ -975,12 +1017,12 @@ let DataScalars = class DataScalars extends PolymerElement {
         (date.getDate() + "").length > 1
           ? date.getDate()
           : "0" + date.getDate();
-      var year = date.getFullYear();
-      var hours =
+      let year = date.getFullYear();
+      let hours =
         (date.getHours() + "").length > 1
           ? date.getHours()
           : "0" + date.getHours();
-      var minutes =
+      let minutes =
         (date.getMinutes() + "").length > 1
           ? date.getMinutes()
           : "0" + date.getMinutes();
@@ -1000,7 +1042,7 @@ let DataScalars = class DataScalars extends PolymerElement {
     if (isLocale) {
       return x.toLocaleString(undefined, { minimumFractionDigits: decimals });
     }
-    var parts = x.toString().split(".");
+    let parts = x.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
     parts[1] =
       parseFloat("0." + parts[1])
@@ -1022,7 +1064,7 @@ let DataScalars = class DataScalars extends PolymerElement {
    * Else it returns the value
    */
   _getLabelFromValue(_suggestions, _value) {
-    var label = _value;
+    let label = _value;
     if (_suggestions) {
       _suggestions.forEach(s => {
         if (s.value == _value) {
@@ -1037,9 +1079,9 @@ let DataScalars = class DataScalars extends PolymerElement {
     if (_value == undefined) {
       return "";
     }
-    var style = this._getStyle(data, metaData);
-    var type = this._getType(data);
-    var variant = this._getVariant(data);
+    let style = this._getStyle(data, metaData);
+    let type = this._getType(data);
+    let variant = this._getVariant(data);
     if (
       type == "number" &&
       ["financial", "financial-locale"].indexOf(variant) > -1
