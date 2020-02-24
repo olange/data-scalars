@@ -214,11 +214,16 @@ let DataScalars = class DataScalars extends PolymerElement {
         }
 
         div.content .element {
+          display: flex;
+          flex-grow: 1;
+          height: 100%;
+          align-items: center;
           background-color: transparent;
           width: 100%;
         }
         div.content:not([editing]) .element.number {
           text-align: right;
+          justify-content: flex-end;
         }
         div.content .element.financial {
           /** Nothing yet */
