@@ -19,7 +19,9 @@
   "bugs": {
     "url": "https://github.com/olange/data-scalars/issues"
   },
-  "vaadin": { "disableUsageStatistics": true },
+  "vaadin": {
+    "disableUsageStatistics": true
+  },
   "dependencies": {
     "@polymer/iron-icon": "^3.0.1",
     "@polymer/iron-input": "^3.0.1",
