@@ -28,7 +28,7 @@
     "@polymer/polymer": "^3.2.0",
     "@vaadin/vaadin-combo-box": "^5.0.1",
     "flag-cc": "github:yveslange/flag-cc",
-    "immutable": "4.0.0-rc.12",
+    "immutable": "4.3.8",
     "@webcomponents/webcomponentsjs": "^2.2.9"
   },
   "devDependencies": {
